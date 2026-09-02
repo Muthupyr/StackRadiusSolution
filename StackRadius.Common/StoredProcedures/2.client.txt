@@ -1,0 +1,98 @@
+-- Table: public.client
+-- DROP TABLE IF EXISTS public.client;
+
+CREATE TABLE IF NOT EXISTS public.client
+(
+    clientid integer NOT NULL,
+    panno character varying(10) COLLATE pg_catalog."default",
+    amccode character varying(10) COLLATE pg_catalog."default",
+    mobileno character varying(10) COLLATE pg_catalog."default",
+    invemail character varying(50) COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.client
+    OWNER to postgres;
+-- --------------------------------------------------------------------------
+-- FUNCTION AND STORED PROCEDURE FOR CLIENT TABLE 
+-- --------------------------------------------------------------------------
+
+-- FUNCTION: public.clientgetall_fn()
+
+-- DROP FUNCTION IF EXISTS public.clientgetall_fn();
+
+CREATE OR REPLACE FUNCTION public.clientgetall_fn(
+	)
+    RETURNS TABLE(clientid integer, panno character varying, amccode character varying, mobileno character varying, invemail character varying) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+    BEGIN 
+		return query select * FROM Client;
+		--WHERE (Client.clientid = 1);
+END;
+$BODY$;
+
+ALTER FUNCTION public.clientgetall_fn()
+    OWNER TO postgres;
+
+-- --------------------------------------------------------------------------
+-- FUNCTION: public.clientgetbyid_fn(integer)
+
+-- DROP FUNCTION IF EXISTS public.clientgetbyid_fn(integer);
+
+CREATE OR REPLACE FUNCTION public.clientgetbyid_fn(
+	p_clientid integer)
+    RETURNS TABLE(clientid integer, panno character varying, amccode character varying, mobileno character varying, invemail character varying) 
+    LANGUAGE 'sql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+ 
+	SELECT clientid, panno, amccode, mobileno, invemail
+    	FROM Client 
+    	WHERE Client.clientid =p_clientid;
+	
+$BODY$;
+
+ALTER FUNCTION public.clientgetbyid_fn(integer)
+    OWNER TO postgres;
+
+-- --------------------------------------------------------------------------
+-- PROCEDURE: public.client_sp(character varying, integer, character varying, character varying, character varying, character varying)
+
+-- DROP PROCEDURE IF EXISTS public.client_sp(character varying, integer, character varying, character varying, character varying, character varying);
+
+CREATE OR REPLACE PROCEDURE public.client_sp(
+	IN mode character varying,
+	IN p_clientid integer,
+	IN p_amccode character varying,
+	IN p_panno character varying,
+	IN p_mobileno character varying,
+	IN p_invemail character varying)
+LANGUAGE 'plpgsql'
+AS $BODY$
+    BEGIN 
+		IF mode = 'INSERT' THEN	
+	 		INSERT INTO client (clientid, amccode, panno, mobileno, invemail)
+ 				 VALUES (p_clientId, p_amccode,p_panno, p_mobileno,p_invemail); 
+		ELSIF mode = 'UPDATE' THEN	
+			UPDATE client 
+			SET clientid=P_clientid, amccode=p_amccode, panno=p_panno,
+				mobileno=p_mobileno, invemail=p_invemail
+			WHERE (clientid = p_clientid);
+		ELSIF mode = 'DELETE' THEN	
+			DELETE FROM client WHERE (clientId = p_clientid);
+		END IF;
+	END;
+    
+$BODY$;
+ALTER PROCEDURE public.client_sp(character varying, integer, character varying, character varying, character varying, character varying)
+    OWNER TO postgres;
+

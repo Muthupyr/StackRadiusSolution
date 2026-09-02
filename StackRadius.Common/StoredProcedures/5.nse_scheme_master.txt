@@ -1,0 +1,300 @@
+﻿-- Table: nse_scheme_master
+-- DROP TABLE IF EXISTS nse_scheme_master;
+
+CREATE TABLE IF NOT EXISTS nse_scheme_master
+(
+    unique_sr_no integer NOT NULL,
+    scheme_code text COLLATE pg_catalog."default",
+    rta_scheme_code text COLLATE pg_catalog."default",
+    amc_scheme_code text COLLATE pg_catalog."default",
+    isin text COLLATE pg_catalog."default",
+    amc_code text COLLATE pg_catalog."default",
+    scheme_type text COLLATE pg_catalog."default",
+    plan_type text COLLATE pg_catalog."default",
+    scheme_name text COLLATE pg_catalog."default",
+    purchase_allowed text COLLATE pg_catalog."default",
+    purchase_transaction_mode text COLLATE pg_catalog."default",
+    new_purchase_min_amount numeric(14,2),
+    additional_purchase_min_amount numeric(12,2),
+    additional_purchase_max_amount integer,
+    purchase_amount_multiplier numeric(13,2),
+    purchase_cutoff_time time without time zone,
+    redemption_allowed text COLLATE pg_catalog."default",
+    redemption_transaction_mode text COLLATE pg_catalog."default",
+    redemption_min_qty numeric(10,3),
+    redemption_qty_multiplier numeric(8,3),
+    redemption_max_qty integer,
+    redemption_min_amount numeric(12,2),
+    redemption_max_amount bigint,
+    redemption_amount_multiplier numeric(10,2),
+    redemption_cutoff_time time without time zone,
+    rta_agent_code text COLLATE pg_catalog."default",
+    amc_active_flag text COLLATE pg_catalog."default",
+    div_reinvest_flag text COLLATE pg_catalog."default",
+    sip_allowed text COLLATE pg_catalog."default",
+    stp_enabled text COLLATE pg_catalog."default",
+    swp_enabled text COLLATE pg_catalog."default",
+    switch_allowed text COLLATE pg_catalog."default",
+    settlement_type text COLLATE pg_catalog."default",
+    amc_ind text COLLATE pg_catalog."default",
+    face_value integer,
+    scheme_start_date date,
+    maturity_date date,
+    exit_load_flag text COLLATE pg_catalog."default",
+    exit_load text COLLATE pg_catalog."default",
+    lock_in_period_flag text COLLATE pg_catalog."default",
+    lock_in_period integer,
+    channel_partner_code text COLLATE pg_catalog."default",
+    reopening_date date,
+    open_close_ended_scheme text COLLATE pg_catalog."default",
+    CONSTRAINT nse_scheme_master_pkey PRIMARY KEY (unique_sr_no)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS nse_scheme_master
+    OWNER to postgres;
+	
+-- Index: ux_scheme_master_scheme_code
+-- DROP INDEX IF EXISTS ux_scheme_master_scheme_code;
+
+CREATE UNIQUE INDEX IF NOT EXISTS ux_scheme_master_scheme_code
+    ON nse_scheme_master USING btree
+    (scheme_code COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;	
+
+-- Index: ix_scheme_master_amc_code
+-- DROP INDEX IF EXISTS ix_scheme_master_amc_code;
+
+CREATE INDEX IF NOT EXISTS ix_scheme_master_amc_code 
+	ON nse_scheme_master USING btree
+    (amc_code COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+	
+-- Index: ix_scheme_master_isin
+-- DROP INDEX IF EXISTS ix_scheme_master_isin;
+
+CREATE INDEX IF NOT EXISTS ix_scheme_master_isin
+    ON nse_scheme_master USING btree
+    (isin COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+	
+-- Index: ix_scheme_master_purchase_allowed
+-- DROP INDEX IF EXISTS ix_scheme_master_purchase_allowed;
+
+CREATE INDEX IF NOT EXISTS ix_scheme_master_purchase_allowed
+    ON nse_scheme_master USING btree
+    (purchase_allowed COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default
+    WHERE purchase_allowed = 'Y'::text;
+
+-- Index: ix_scheme_master_rta_scheme_code
+-- DROP INDEX IF EXISTS ix_scheme_master_rta_scheme_code;
+
+CREATE INDEX IF NOT EXISTS ix_scheme_master_rta_scheme_code
+    ON nse_scheme_master USING btree
+    (rta_scheme_code COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+	
+-- Index: ix_scheme_master_scheme_type
+-- DROP INDEX IF EXISTS ix_scheme_master_scheme_type;
+
+CREATE INDEX IF NOT EXISTS ix_scheme_master_scheme_type
+    ON nse_scheme_master USING btree
+    (scheme_type COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+	
+-- Index: ix_scheme_master_sip_allowed
+-- DROP INDEX IF EXISTS ix_scheme_master_sip_allowed;
+
+CREATE INDEX IF NOT EXISTS ix_scheme_master_sip_allowed
+    ON nse_scheme_master USING btree
+    (sip_allowed COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default
+    WHERE sip_allowed = 'Y'::text;
+
+---------------------------------------------------------------------------
+    
+-- FUNCTION: public.nse_scheme_master_getall_fn()
+-- DROP FUNCTION IF EXISTS public.nse_scheme_master_getall_fn();
+-- Select * from nse_scheme_master_getall_fn();
+CREATE OR REPLACE FUNCTION public.nse_scheme_master_getall_fn(
+	)
+    RETURNS TABLE(unique_sr_no integer,scheme_code text 	,rta_scheme_code text 	,amc_scheme_code text 	,isin text 	,amc_code text 	,scheme_type text 	,plan_type text 	,scheme_name text 	,purchase_allowed text 	,purchase_transaction_mode text 	,new_purchase_min_amount numeric(14,2),additional_purchase_min_amount numeric(12,2),additional_purchase_max_amount integer,purchase_amount_multiplier numeric(13,2),purchase_cutoff_time time without time zone,redemption_allowed text 	,redemption_transaction_mode text 	,redemption_min_qty numeric(10,3),redemption_qty_multiplier numeric(8,3),redemption_max_qty integer,redemption_min_amount numeric(12,2),redemption_max_amount bigint,redemption_amount_multiplier numeric(10,2),redemption_cutoff_time time without time zone,rta_agent_code text 	,amc_active_flag text 	,div_reinvest_flag text 	,sip_allowed text 	,stp_enabled text 	,swp_enabled text 	,switch_allowed text 	,settlement_type text 	,amc_ind text 	,face_value integer,scheme_start_date date,maturity_date date,exit_load_flag text 	,exit_load text 	,lock_in_period_flag text 	,lock_in_period integer,channel_partner_code text 	,reopening_date date,open_close_ended_scheme text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+    BEGIN
+        RETURN QUERY SELECT * FROM public.nse_scheme_master;
+    END;
+$BODY$;
+
+ALTER FUNCTION public.nse_scheme_master_getall_fn()
+    OWNER TO postgres;
+
+------------------------------------------------------------------------------
+-- PROCEDURE: public.nse_scheme_master_sp(character varying, jsonb)
+-- DROP PROCEDURE IF EXISTS public.nse_scheme_master_sp(character varying, jsonb);
+-- Call nse_scheme_master_sp('INSERT', '{"unique_sr_no": 1434, "new_purchase_min_amount":100,"purchase_cutoff_time":"12:50","open_close_ended_scheme": "Close"}');
+-- Select * from nse_scheme_master_getall_fn();
+CREATE OR REPLACE PROCEDURE public.nse_scheme_master_sp(
+	IN mode character varying,
+	IN p_data jsonb)
+LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	IF mode = 'INSERT' THEN
+		INSERT INTO public.nse_scheme_master (
+			unique_sr_no,
+			scheme_code,
+			rta_scheme_code,
+			amc_scheme_code,
+			isin,
+			amc_code,
+			scheme_type,
+			plan_type,
+			scheme_name,
+			purchase_allowed,
+			purchase_transaction_mode,
+			new_purchase_min_amount,
+			additional_purchase_min_amount,
+			additional_purchase_max_amount,
+			purchase_amount_multiplier,
+			purchase_cutoff_time,
+			redemption_allowed,
+			redemption_transaction_mode,
+			redemption_min_qty,
+			redemption_qty_multiplier,
+			redemption_max_qty,
+			redemption_min_amount,
+			redemption_max_amount,
+			redemption_amount_multiplier,
+			redemption_cutoff_time,
+			rta_agent_code,
+			amc_active_flag,
+			div_reinvest_flag,
+			sip_allowed,
+			stp_enabled,
+			swp_enabled,
+			switch_allowed,
+			settlement_type,
+			amc_ind,
+			face_value,
+			scheme_start_date,
+			maturity_date,
+			exit_load_flag,
+			exit_load,
+			lock_in_period_flag,
+			lock_in_period,
+			channel_partner_code,
+			reopening_date,
+			open_close_ended_scheme	
+		)
+		VALUES (
+			(p_data->>'unique_sr_no')::Integer,
+			(p_data->>'scheme_code')::TEXT,
+			(p_data->>'rta_scheme_code')::TEXT,
+			(p_data->>'amc_scheme_code')::TEXT,
+			(p_data->>'isin')::TEXT,
+			(p_data->>'amc_code')::TEXT,
+			(p_data->>'scheme_type')::TEXT,
+			(p_data->>'plan_type')::TEXT,
+			(p_data->>'scheme_name')::TEXT,
+			(p_data->>'purchase_allowed')::TEXT,
+			(p_data->>'purchase_transaction_mode')::TEXT,
+			(p_data->>'new_purchase_min_amount ')::numeric,
+			(p_data->>'additional_purchase_min_amount ')::numeric,
+			(p_data->>'additional_purchase_max_amount ')::Integer,
+			(p_data->>'purchase_amount_multiplier ')::numeric,
+			(p_data->>'purchase_cutoff_time')::Time,
+			(p_data->>'redemption_allowed')::TEXT,
+			(p_data->>'redemption_transaction_mode')::TEXT,
+			(p_data->>'redemption_min_qty ')::numeric,
+			(p_data->>'redemption_qty_multiplier ')::numeric,
+			(p_data->>'redemption_max_qty ')::Integer,
+			(p_data->>'redemption_min_amount ')::numeric,
+			(p_data->>'redemption_max_amount bigint')::Integer,
+			(p_data->>'redemption_amount_multiplier ')::numeric,
+			(p_data->>'redemption_cutoff_time')::Time,
+			(p_data->>'rta_agent_code')::TEXT,
+			(p_data->>'amc_active_flag')::TEXT,
+			(p_data->>'div_reinvest_flag')::TEXT,
+			(p_data->>'sip_allowed')::TEXT,
+			(p_data->>'stp_enabled')::TEXT,
+			(p_data->>'swp_enabled')::TEXT,
+			(p_data->>'switch_allowed')::TEXT,
+			(p_data->>'settlement_type')::TEXT,
+			(p_data->>'amc_ind')::TEXT,
+			(p_data->>'face_value ')::Integer,
+			(p_data->>'scheme_start_date ')::Date,
+			(p_data->>'maturity_date ')::Date,
+			(p_data->>'exit_load_flag')::TEXT,
+			(p_data->>'exit_load')::TEXT,
+			(p_data->>'lock_in_period_flag')::TEXT,
+			(p_data->>'lock_in_period ')::Integer,
+			(p_data->>'channel_partner_code')::TEXT,
+			(p_data->>'reopening_date ')::Date,
+			(p_data->>'open_close_ended_scheme')::TEXT
+		);
+
+	ELSIF mode = 'UPDATE' THEN
+		UPDATE public.nse_scheme_master
+		SET
+			unique_sr_no=(p_data->>'unique_sr_no')::Integer,
+			scheme_code=(p_data->>'scheme_code')::TEXT,
+			rta_scheme_code=(p_data->>'rta_scheme_code')::TEXT,
+			amc_scheme_code=(p_data->>'amc_scheme_code')::TEXT,
+			isin=(p_data->>'isin')::TEXT,
+			amc_code=(p_data->>'amc_code')::TEXT,
+			scheme_type=(p_data->>'scheme_type')::TEXT,
+			plan_type=(p_data->>'plan_type')::TEXT,
+			scheme_name=(p_data->>'scheme_name')::TEXT,
+			purchase_allowed=(p_data->>'purchase_allowed')::TEXT,
+			purchase_transaction_mode=(p_data->>'purchase_transaction_mode')::TEXT,
+			new_purchase_min_amount=(p_data->>'new_purchase_min_amount ')::numeric,
+			additional_purchase_min_amount=(p_data->>'additional_purchase_min_amount ')::numeric,
+			additional_purchase_max_amount=(p_data->>'additional_purchase_max_amount ')::Integer,
+			purchase_amount_multiplier=(p_data->>'purchase_amount_multiplier ')::numeric,
+			purchase_cutoff_time=(p_data->>'purchase_cutoff_time')::Time,
+			redemption_allowed=(p_data->>'redemption_allowed')::TEXT,
+			redemption_transaction_mode=(p_data->>'redemption_transaction_mode')::TEXT,
+			redemption_min_qty=(p_data->>'redemption_min_qty ')::numeric,
+			redemption_qty_multiplier=(p_data->>'redemption_qty_multiplier ')::numeric,
+			redemption_max_qty=(p_data->>'redemption_max_qty ')::Integer,
+			redemption_min_amount=(p_data->>'redemption_min_amount ')::numeric,
+			redemption_max_amount=(p_data->>'redemption_max_amount bigint')::Integer,
+			redemption_amount_multiplier=(p_data->>'redemption_amount_multiplier ')::numeric,
+			redemption_cutoff_time=(p_data->>'redemption_cutoff_time')::Time,
+			rta_agent_code=(p_data->>'rta_agent_code')::TEXT,
+			amc_active_flag=(p_data->>'amc_active_flag')::TEXT,
+			div_reinvest_flag=(p_data->>'div_reinvest_flag')::TEXT,
+			sip_allowed=(p_data->>'sip_allowed')::TEXT,
+			stp_enabled=(p_data->>'stp_enabled')::TEXT,
+			swp_enabled=(p_data->>'swp_enabled')::TEXT,
+			switch_allowed=(p_data->>'switch_allowed')::TEXT,
+			settlement_type=(p_data->>'settlement_type')::TEXT,
+			amc_ind=(p_data->>'amc_ind')::TEXT,
+			face_value=(p_data->>'face_value ')::Integer,
+			scheme_start_date=(p_data->>'scheme_start_date ')::Date,
+			maturity_date=(p_data->>'maturity_date ')::Date,
+			exit_load_flag=(p_data->>'exit_load_flag')::TEXT,
+			exit_load=(p_data->>'exit_load')::TEXT,
+			lock_in_period_flag=(p_data->>'lock_in_period_flag')::TEXT,
+			lock_in_period=(p_data->>'lock_in_period ')::Integer,
+			channel_partner_code=(p_data->>'channel_partner_code')::TEXT,
+			reopening_date=(p_data->>'reopening_date ')::Date,
+			open_close_ended_scheme	=(p_data->>'open_close_ended_scheme')::TEXT
+		WHERE (unique_sr_no = (p_data->>'unique_sr_no')::Integer);
+
+	ELSIF mode = 'DELETE' THEN
+		DELETE FROM public.nse_scheme_master
+WHERE (unique_sr_no = (p_data->>'unique_sr_no')::Integer);
+	END IF;
+END;
+$BODY$;
+ALTER PROCEDURE public.nse_scheme_master_sp(character varying, jsonb)
+    OWNER TO postgres;
+

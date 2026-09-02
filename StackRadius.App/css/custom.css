@@ -1,0 +1,489 @@
+/* Extra small devices (portrait phones, less than 576px) */
+/* No media query since this is the default in Bootstrap */
+
+/* general styles starts */
+.txt-ctr {
+	text-align:center;
+}
+
+/*border styles*/
+.border-0 {
+    border:0 !important;
+}
+
+.border-bt-1 {
+    border-bottom:1px solid #cccccc !important;
+}
+
+
+/*width*/
+.w12 {
+    width:12% !important;
+}
+
+/* general styles ends */
+
+/* header styles */
+.navbar-brand {
+    height: auto;
+    padding: 8px 15px;
+}
+
+.logo-content {
+	color: #e91e63;
+    font-size: 20px;
+    margin: 0 0 0 0;
+	padding: 10px 0 10px 10px;
+}
+
+.logo-content small {
+	display: block;
+    width: 100%;
+    text-align: left;
+    color: #505050;
+    margin-top: -5px;
+	font-size: 11px;
+}
+
+.navbar-brand > img {
+	width: 100px;
+}
+
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+	margin-left: 50px;
+    width: 100%;
+}
+  /*@* Changes made by dellirani *@*/
+.login-page-bg {
+	/*background: url(../images/login-bg4.jpg);*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	height: 100%;
+	z-index: -10;
+}
+/*@* Changes made by dellirani *@*/
+.login-bg-overlay {
+	background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	height: 100%;
+	z-index: -9;
+}
+
+.login-page {
+	background: none;
+	margin: 10% auto;
+	overflow-x: hidden;
+}
+
+.login-page .login-box .logo {
+    padding: 0px 0 15px 0;
+	margin: 0;
+	text-align: center;
+}
+
+.login-page .login-box a {
+	font-size: 13px;
+    text-decoration: none;
+    color: #2196F3;
+}
+
+.login-page .card {
+	`background: #ffffff;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin: 0;
+}
+
+.login-page .login-box .logo a {
+	font-size:28px;
+}
+
+.login-page .login-box .logo .logo-img {
+	display: inline-block;
+    width: 100%;
+    padding: 0 0 0 0;
+    margin: 0 0 10px 0;
+}
+
+.login-box {
+    
+	overflow:hidden;
+}
+
+.ls-closed .bars:after, .ls-closed .bars:before {
+	font-size: 33px;
+	top: 20px;
+    left: 20px;
+	
+}
+
+.bars
+  {
+      display:none;
+  }
+
+.dropdown-menu ul.menu li {
+    list-style-type: none;
+}
+
+/* Table buttons sytles starts */
+
+.dataTables_wrapper .dt-buttons a.dt-button {
+	display:inline-block;
+}
+
+/* Table buttons styles ends */
+
+
+/*.input-group .form-line:after {
+    border-bottom: 2px solid #4CAF50;
+}*/
+
+
+.form-group .form-line:after {
+	border-bottom: 2px solid #4CAF50;
+}
+
+.label-info {
+	background-color: #FF5722;
+}
+
+.noUi-horizontal .noUi-handle {
+	background-color: #4CAF50;
+	cursor: pointer;
+}
+
+.noUi-connect {
+	background-color: #4CAF50;
+}
+
+
+/* side bar styles */
+	
+	.sidebar {
+		top: 63px;
+		height: calc(100vh - 63px);
+	}
+	
+	.sidebar .menu .list .ml-menu li a:hover {
+		color: #3f51b5;
+	}
+	
+	
+/* info box styles  */
+	
+	.info-box {
+		text-align: right;
+	}
+	
+	.info-box .content {
+		width: 68%;
+	}
+	
+	.info-box .icon i {
+		font-size: 40px;
+	}
+	
+	.info-box .content .number {
+		font-size: 28px;
+		font-weight:300;
+	}
+	
+	.info-box .content .text {
+		margin-top: 8px;
+	}		
+	
+	.logo-text {
+		float:left;
+		padding: 5px 0 0 10px;
+	}
+	
+	.dropdown-menu {
+		min-width:170px;
+	}
+
+    .dropdown-input .form-control{
+        z-index:unset;
+    }
+
+    .table-responsive {
+        border:0;
+    }
+
+    .card .header .header-dropdown {
+        top:10px;
+    }
+
+    textarea.form-control {
+        height:34px;
+    }
+
+     .Complainttextarea {
+        height:100px !important;
+    }
+
+    .modal-dialog {
+        width:800px
+    }
+
+
+/* -- dev styles starts --- */
+.dataTables_wrapper .dataTables_length label {
+    width:55%;
+}
+
+.dataTables_wrapper .dataTables_length label .bootstrap-select {
+    display: inline-block;
+    width: 60%;
+}
+
+    .dataTables_wrapper .dataTables_length label .bootstrap-select.input-sm {
+        height:34px;
+    }
+
+
+.dataTables_wrapper .dt-buttons {
+    width: 100%;
+    padding: 0 0 20px 0;
+}
+
+
+.dataTables_wrapper .dataTables_filter {
+    text-align: right;
+}
+
+/*.dataTables_wrapper .row {
+    margin:0 !important;
+}*/
+
+.table-action {
+    text-align:left;
+}
+
+th.table-action:after {
+    content:" " !important;
+    cursor: pointer;
+}
+
+th.table-action {
+    cursor: default !important;
+}
+
+
+.table-action a {
+    padding:0 10px 0 10px;
+}
+
+.logout {
+    float: right;
+    color: #ffffff;
+    margin: 22px 20px 0 0;
+}
+
+.logout:hover {
+     color: #d8d8d8;
+}
+
+.logout span {
+    float: right;
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 0px 0 5px;
+}
+
+label.error {
+    position: absolute;
+    z-index: 1;
+    /*right: 0;
+    right: 15px;*/
+    bottom: -28px;
+    font-size: 12px;
+    font-weight: normal;
+    color: #F44336;
+}
+
+/* -- dev styles ends -- */
+
+
+.bars{display:none !Important;}
+
+table th{    background: #c4d1ec;}
+
+
+	
+/* --------- mobile style ends ----------  */
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {	
+}
+
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 	
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+}
+
+
+/* Extra large devices (large desktops, 1200px and up) */
+
+@media (min-width: 1200px) { 
+
+	/* header styles */
+
+	
+	.logo-content {
+		font-size: 22px;
+	}
+
+	.logo-content small {
+		font-size: 12px;
+	}
+	
+
+	/* nav bar styles */
+
+	.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+		    margin-left: 45px;
+	}
+	
+	.navbar-brand > img {
+		width:auto;
+        max-width:170px;
+	}
+	
+	/* side bar styles */
+	
+	.sidebar {
+		top:71px;
+		height: calc(100vh - 71px);
+	}
+	
+	.logo-text {
+		float:left;
+		padding: 5px 0 0 10px;
+	}
+
+    /*.table-responsive {
+        overflow-x: hidden;
+    }*/
+	
+}
+
+
+.menu .active  { color:#3F51B5 !Important;}
+.li .active{color:#3F51B5 !Important;}
+.ul .li .active{color:#3F51B5 !Important;}
+a.activeMenuItem {
+    color:#3F51B5 !Important;
+}
+.toggled > .ml-menu {display:block;}
+.navbar-brand{margin-left:55px;}
+
+
+
+@media (max-width: 1024px) {
+
+	.bars{display:block !Important;}
+    .navbar .navbar-toggle{display:none!important;}
+
+    .ls-closed .bars:after, .ls-closed .bars:before{top:8px;}
+    .block-header{margin-top:-25px;}
+  
+    .bars {     display:none !important;    }
+    .navbar-brand{margin-left:0px !important;  padding: 0px 15px;}
+    .navbar-header {  padding: 10px 0px;}
+    .navbar-brand > img {  width: 150px;}
+}
+
+@media (max-width: 767px) {
+
+    .navbar-brand, .navbar-header .active{margin-left:55px !important;}
+    .bars {display:block !important; }
+    .navbar-header {  padding: 10px 0px;}
+    .sidebar{ width:0;}
+    .overlay-open .sidebar {  margin-left: 0;  width:240px;}
+    .ls-closed section.content {  margin-left: 0;  margin-right: 0;}
+    .overlay-open .sidebar .menu .list .menu-toggle:before { content: '+';}
+    .container-fluid-ml-custom {margin-left:auto !important;
+
+}
+
+
+    .form-hei-fix {height:auto!important;
+    }
+.card.card-is h2 { font-size:18px; !important
+}
+.card-is-input {
+min-width:80%; float:right; margin-top:5px;}
+
+@media (max-width: 767px) {.card-is-input {
+ float:left; margin-top:20px; width:100%;}
+}
+
+@media (max-width: 1024px) {.card.card-is h2 { font-size:14px; !important
+}
+
+.footer-style {z-index:4 !important;
+}
+.tab-scroll-1 { overflow-x:scroll;
+}
+.ml-menu-custom li a {padding-top:5px!important;padding-bottom:5px!important;
+}
+.container-fluid-ml-custom {margin-left:-53px;
+}
+
+
+.table-wrap {
+    table-layout: fixed;
+}
+
+       .table-wrap td {
+            word-wrap: break-word;
+        }
+.modal.popup-layer {z-index:1070!important;background-color:rgba(0, 0, 0, 0.8)!important;opacity:2!important;
+}
+.modal-dialog.popup-layer-inner {top:0%!important;
+}
+
+@media only screen and (max-width: 1024px) and (min-width: 767px) {
+    .container-fluid-ml-custom {
+        margin-left: -59px !important;
+    }
+}
+
+.required-custom label.error {
+    right: 15px !important;
+}
+		
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+
+    .mobile-display {display:block;}
+    .mobile-text-left {
+        text-align: left !important;
+    }
+    .invoice-box {padding: 0px !important;border: none !important;box-shadow: none !important;}
+ 
+       .modal-dialog {width: 94%;}
+       .modal .modal-content .modal-body {padding: 15px 15px;}
+       .invoice-box table tr.details table td {padding: 5px;}
+        .invoice-box table td {padding: 7px 2px !important}
+
+}

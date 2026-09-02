@@ -1,0 +1,125 @@
+﻿@model IEnumerable<StackRadius.Entity.ClientProfileModel>
+@{
+    ViewBag.Title = "Client Profile List";
+}
+<form asp-controller="ClientProfile" method="post">   
+<div class="container-fluid">
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Client Profile List
+                    </h2>        
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                            <table id="tblClientProfile" class="table table-bordered table-striped table-hover dataTable js-exportable table-wrap">
+                                <thead>
+                                <tr>                                   
+                                    <th>Client Code</th>
+                                    <th>Member Code</th>
+                                    <th>primary_holder_name</th>
+                                    <th>primary_holder_pan</th>
+                                     <th>second_holder_pan</th>
+                                    <th class="table-action w12">Action</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                               <tr>
+                                   <th>Client Code</th> 
+                                   <th>Member Code</th>                                  
+                                   <th>primary_holder_name</th>
+                                   <th>primary_holder_pan</th>
+                                   <th>second_holder_pan</th>
+                                   <th class="table-action w12">Action</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @if (Model.Count() > 0)
+                                {
+                                    var Sortlst = Model.OrderBy(x => x.client_code);
+                                    foreach (var lst in Sortlst)
+                                    {
+                                        <tr>
+                                            <td>@lst.client_code</td>
+                                            <td>@lst.member_code</td>
+                                            <td>@lst.primary_holder_name</td>
+                                             <td>@lst.primary_holder_pan</td>
+                                             <td>@lst.second_holder_pan</td>                                             
+
+                                          <td class="table-action w12">
+                                                <button type="submit" asp-action="Edit" asp-route-id="@lst.client_code">Edit</button>  
+                                                <a href='#' class='btnDelete' value="@lst.client_code" title='Delete'>Delete</a> 
+                                            </td>
+                                        </tr>
+                                    }
+                                }    
+                            </tbody>
+                        </table>   
+                        <div>
+                            <button title="Download" type="submit" id="btnDownload">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<script>
+    
+  $('#btnDownload').click(function () {
+        $("#btnDownload").prop('disabled', true);
+
+         // var x = $("#ClientProfile").serialize();
+         // alert('data: ' + JSON.stringify(x));
+          
+          $.ajax({
+            url: '@Url.Action("Download", "ClientProfile")',  
+            type: 'POST',
+            //data: $("#ClientProfile").serialize(),         
+
+            success: function (result) {
+                 // alert('result: ' + JSON.stringify(result));
+                // console.log(result);
+                // alert('message: ' + result.message);
+                // alert('status: ' + result.status);
+              
+                if (result.status == "Success"){
+                    swal("",result.message, "success");
+                    $("#btnDownload").prop('disabled', false);                     
+                   
+                    // reload the page with new records
+                    //window.location.reload();
+
+                }
+                else  {
+                    swal("", result.message, "error");
+                    $("#btnDownload").prop('disabled', false);
+                }     
+            }
+        })
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    $('#tblClientProfile').on('click', 'a.btnDelete', function (e) 
+    {  
+        GridDelete({ value: $(this).attr("value"), table: table = $('#tblClientProfile').DataTable(), maintainvalue: this, url: "/ClientProfile/Delete" }); 
+    });
+ </script>
+ 
+
+<script type="text/javascript">
+    // $("#btnAddNew").click(function () { Process({ controller: "ClientProfile", action: "Add" }); });
+    // $(".btnEdit").click(function () { Process({ controller: "ClientProfile", action: "Edit", data: { mode: "Edit", ClientId: $(this).attr("value") } }) });
+    // $(".btnView").click(function () { Process({ controller: "ClientProfile", action: "Edit", data: { mode: "View", ClientId: $(this).attr("value") } }) });
+    // $('#tblAddClient').on('click', 'a.btnDelete', function (e) { GridDelete({ value: $(this).attr("value"), table: table = $('#tblClientProfile').DataTable(),  url: "/ClientProfileAdd/Delete", maintainvalue: this}); });
+    //GridExport({ columns: [0, 1, 2, 3, 4, 5], table: table = $('#tblClient').DataTable(), title: "AddClient List" });
+
+</script>
+

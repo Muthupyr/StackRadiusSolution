@@ -1,0 +1,67 @@
+﻿-- DROP TABLE IF EXISTS public.MasterHistory;
+CREATE TABLE IF NOT EXISTS public.MasterHistory
+(
+    Id SERIAL Primary Key,
+    DownloadOn TIMESTAMP ,
+    Filename character varying(50),
+    NoOfRecords INTEGER,
+    UpdatedOn TIMESTAMP
+)
+
+TABLESPACE pg_default;
+ALTER TABLE IF EXISTS public.MasterHistory OWNER to postgres;
+
+
+-- --------------------------------------------------------------------------------------------------
+-- FUNCTION AND STORED PROCEDURE FOR CLIENT TABLE 
+-- --------------------------------------------------------------------------------------------------
+
+-- DROP FUNCTION IF EXISTS public.masterhistorygetall_fn();
+-- Select * from public.masterhistorygetall_fn();
+CREATE OR REPLACE FUNCTION public.masterhistorygetall_fn()
+    RETURNS TABLE(Id integer,
+    DownloadOn TIMESTAMP ,
+    Filename character varying(50),
+    NoOfRecords INTEGER,
+    UpdatedOn TIMESTAMP)
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+AS $BODY$
+    BEGIN 
+		return query select * FROM MasterHistory;
+END;
+$BODY$ LANGUAGE plpgsql;  -- Explicitly specified language
+
+ALTER FUNCTION public.masterhistorygetall_fn() OWNER TO postgres;
+
+-- --------------------------------------------------------------------------
+-- DROP PROCEDURE IF EXISTS public.masterhistory_sp(integer, TIMESTAMP, character varying,integer, TIMESTAMP);
+
+CREATE OR REPLACE PROCEDURE public.masterhistory_sp(
+	IN p_Id integer,
+	IN p_DownloadOn TIMESTAMP,
+	IN p_Filename character varying(50),
+    IN p_NoOfRecords INTEGER,
+    IN p_UpdatedOn TIMESTAMP)
+LANGUAGE 'plpgsql'
+AS $BODY$
+    BEGIN 
+		IF mode = 'INSERT' THEN	
+	 		INSERT INTO masterhistory (DownloadOn, Filename, NoOfRecords, UpdatedOn)
+ 				 VALUES (p_DownloadOn, p_Filename, p_NoOfRecords,p_UpdatedOn); 
+		ELSIF mode = 'UPDATE' THEN	
+			UPDATE masterhistory 
+			SET DownloadOn=p_DownloadOn, Filename=p_Filename, NoOfRecords=p_NoOfRecords,
+				UpdatedOn=p_UpdatedOn
+			WHERE (id = p_Id);
+		ELSIF mode = 'DELETE' THEN	
+			DELETE FROM masterhistory WHERE (id = p_Id);
+		ELSIF  mode = 'DELETEBYDATE' THEN	
+			DELETE FROM masterhistory WHERE (DownloadOn = p_DownloadOn);
+		END IF;
+	END;
+    
+$BODY$;
+ALTER PROCEDURE public.masterhistory_sp(integer, TIMESTAMP, character varying,integer, TIMESTAMP)
+    OWNER TO postgres;

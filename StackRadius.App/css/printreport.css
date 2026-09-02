@@ -1,0 +1,69 @@
+body {
+    font-family: Arial;
+    color: #505050;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.airReceiver::placeholder {
+    color: rgb(185, 185, 185);
+}
+
+input::placeholder {
+    color: rgb(185, 185, 185) !important;
+}
+
+p {
+    font-weight: 600;
+}
+
+.ph-right::placeholder {
+    text-align: end;
+    color: rgb(185, 185, 185);
+}
+
+.title-center {
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background-color: #ECF4FB;
+    font-weight: 600;
+    color: #505050;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+
+/* Media Query */
+
+@media only screen and (max-width: 998px) {
+    body {
+        font-size: 13px;
+    }
+
+    .form-check-input {
+        margin-left: 0 !important;
+    }
+
+    .title-center {
+        font-size: 14px;
+    }
+
+    .border {
+        margin-top: 10px;
+    }
+
+    .acsReport {
+        font-size: 18px !important;
+    }
+}

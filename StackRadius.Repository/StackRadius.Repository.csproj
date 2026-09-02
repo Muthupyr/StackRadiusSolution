@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Npgsql" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StackRadius.Common\StackRadius.Common.csproj" />
+    <ProjectReference Include="..\StackRadius.DBHelper\StackRadius.DBHelper.csproj" />
+    <ProjectReference Include="..\StackRadius.Entity\StackRadius.Entity.csproj" />
+  </ItemGroup>
+
+</Project>

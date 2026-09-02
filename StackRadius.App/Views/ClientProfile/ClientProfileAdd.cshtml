@@ -1,0 +1,183 @@
+﻿@model StackRadius.Entity.ClientProfileModel
+@{
+    ViewBag.Title = "Client Profile";
+}
+
+<div class="container-fluid">
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        @if (Model.Mode == "Edit")
+                        {
+                            <b>Client Profile Edit</b>
+                        }
+                        else if (Model.Mode == "Save")
+                        {
+                            <b>Client Profile Add</b>
+                        }
+                        else
+                        {
+                            <b> Client Profile View</b>
+                        }
+                    </h2>
+                </div>
+                <div class="body">
+                     <form id="ClientProfileAdd" role="form" class="form-horizontal" method="post" action="javascript:;">
+                        @Html.HiddenFor(a => a.Mode)
+                        @if (Model.Mode == "Save" || Model.Mode == "Edit")
+                        {  
+                            <div class="row clearfix">
+                                <div class="col-md-4">
+                                    <b>Client code</b><span class="col-red">*</span>
+                                    <div class="input-group m-b-0">                                        
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(a => a.client_code, new { @class = "form-control numericOnly required", id = "client_code", @maxlength = 8, placeholder = "Client code" })
+                                        </div>
+                                    </div>
+                                </div>     
+                                 <div class="col-md-4">
+                                    <b>Member Code:</b><span class="col-red">*</span>
+                                    <div class="input-group m-b-0">                                        
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(a => a.member_code, new { @class = "form-control required", id = "client_code", @maxlength = 8, placeholder = "Client code" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Primary Holder Name:</b><span class="col-red">*</span>
+                                    <div class="input-group m-b-0">                                        
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(a => a.primary_holder_name, new { @class = "form-control required", id = "primary_holder_name", @maxlength = 30, placeholder = "Primary holder name" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Primary Holder PAN:</b><span class="col-red">*</span>
+                                    <div class="input-group m-b-0">                                        
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(a => a.primary_holder_pan, new { @class = "form-control required", id = "primary_holder_pan", @maxlength = 10, placeholder = "Primary holder PAN" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-4">
+                                    <b>Secondary Holder PAN:</b><span class="col-red">*</span>
+                                    <div class="input-group m-b-0">                                        
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(a => a.second_holder_pan, new { @class = "form-control required", id = "second_holder_pan", @maxlength = 10, placeholder = "Second holder PAN" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <th></th>
+
+                                   <th></th>
+                               
+                                @* <div class="col-md-4">
+                                    <b>PAN No:</b>
+                                    <div class="input-group m-b-0">
+                                        <div>
+                                         @Html.TextBoxFor(a => a.panNo, new { @class = "form-control", id = "panNo", @maxlength = 10, placeholder = "PAN No" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Mobile No:</b>
+                                    <div class="input-group m-b-0">
+                                        <div>
+                                         @Html.TextBoxFor(a => a.mobileNo, new { @class = "form-control", id = "mobileNo", @maxlength = 10, placeholder = "Mobile No" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Email:</b>
+                                    <div class="input-group m-b-0">
+                                        <div>
+                                         @Html.TextBoxFor(a => a.invEmail, new { @class = "form-control", id = "invEmail", @maxlength = 25, placeholder = "Investor Email" })
+                                        </div>
+                                    </div>
+                                </div>   *@                          
+                            </div>    
+                        }
+
+                        <div class="row clearfix js-sweetalert">
+                            <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 txt-ctr">                                    
+                                @if (Model.Mode == "Save")
+                                {
+                                    <button title="Save" type="submit" id="btnSave">Save</button>
+                                }
+                                else if (Model.Mode == "Edit")
+                                {
+                                    <button title="Update" type="submit" id="btnSave">Update</button>
+                                }
+                                <button title="Back" id="btnCancel" onclick="location.href = '/ClientProfile/Index'">Back</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+  $('#btnSave').click(function () {
+        $("#btnSave").prop('disabled', true);
+
+          var x = $("#ClientProfileAdd").serialize();
+          //alert('data: ' + JSON.stringify(x));
+          
+          $.ajax({
+            url: '@Url.Action("InsertUpdateClientProfile", "ClientProfile")',  
+            type: 'POST',
+            data: $("#ClientProfileAdd").serialize(),          
+
+            success: function (result) {
+                // alert('result: ' + JSON.stringify(result));
+                // console.log(result);
+                // alert('message: ' + result.message);
+                // alert('status: ' + result.status);
+
+                if (result.status == "save") {
+
+                    if (result.message == "success") {
+                        swal("", "Record added successfully", "success")
+                        $("#btnSave").prop('disabled', false);
+                        $('#ClientAdd').each(function () {
+                            this.reset();
+                        })
+                    }
+                    else if (result.message == "exists") {
+                        swal("", "Client already exists.", "error")
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else {
+                        swal("", "Record added failed.", "error")
+                        $("#btnSave").prop('disabled', false);
+                    }
+                } else if (result.status == "update") {
+
+                    if (result.message == "success") {
+                        swal("", "Record updated successfully.", "success")
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else if (result.message == "notexists") {
+                        swal("", "Client not exists.", "error")
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else {
+                        swal("", "Record updated failed.", "error")
+                        $("#btnSave").prop('disabled', false);
+                    }
+                }
+                else {
+                    swal("", result.message, "error");
+                    $("#btnSave").prop('disabled', false);
+                }
+            }
+        })
+    });
+
+</script>
