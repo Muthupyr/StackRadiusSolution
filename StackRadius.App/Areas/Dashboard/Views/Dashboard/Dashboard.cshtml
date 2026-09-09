@@ -1,0 +1,127 @@
+﻿@model StackRadius.Entity.DashboardModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Dashboard";
+    ViewData["AreaKey"] = "dashboard";
+    ViewData["SubAreaKey"] = "dashboard";
+    ViewData["FooterRight"] = "Cross-exchange reference · scheme masters · vocabulary";
+}
+@*
+    ══════════════════════════════════════════════════════════════════════════
+    Pages/Master/Dashboard/MdHome.cshtml
+    URL: http://localhost:5220/dashboard/dashboard
+
+    Renders inside _Layout.cshtml (@RenderBody). The Layout has already
+    drawn the SessionBand / GlobalNav / BreadCrumb / SideMap around this
+    content — this file OWNS ONLY the middle content area.
+
+    Structure (top → bottom):
+        1. CommandBar (Refresh · Import · Export)
+        2. Page header (icon + title + tagline)
+        3. Stat tile grid (6 tiles from MdHomeModel.Tiles)
+        4. Two-column mini-table row (Entities by folder · Entities by status)
+        5. Info panel — "What this app is"
+    ══════════════════════════════════════════════════════════════════════════
+*@
+
+<!-- 1. CommandBar — the toolbar strip immediately below the breadcrumb -->
+<div class="commandbar">
+    <div class="commandbar-entity">
+        <svg class="icon"><use href="#i-dashboard" /></svg>
+        Master Home
+    </div>
+    <button type="button" class="commandbar-btn">
+        <svg class="icon"><use href="#i-refresh" /></svg>
+        Refresh from source
+    </button>
+    <button type="button" class="commandbar-btn">
+        <svg class="icon"><use href="#i-plus" /></svg>
+        Import master
+    </button>
+    <div class="commandbar-divider"></div>
+    <button type="button" class="commandbar-btn">
+        <svg class="icon"><use href="#i-file-chart" /></svg>
+        Coverage report
+    </button>
+    <div class="commandbar-right">
+        <button type="button" class="commandbar-btn">
+            <svg class="icon"><use href="#i-download" /></svg>
+            Export
+        </button>
+    </div>
+</div>
+
+<!-- 2, 3, 4, 5 — main content area -->
+<div class="page">
+
+    <!-- 2. Page header -->
+    <div class="page-header">
+        <div class="icon-box indigo">
+            <svg class="icon icon-xl"><use href="#i-book" /></svg>
+        </div>
+        <div>
+            <h1>Home</h1>
+            <p>Cross-exchange reference data. NSE + BSE + MFU scheme masters, ISIN registry, AMC catalogue, categories, benchmarks, calendars. Read-mostly; refreshed daily from source files.</p>
+        </div>
+    </div>
+
+    <!-- 3. Stat tile grid -->
+    <div class="stat-tile-grid">
+        @foreach (var t in Model.Tiles)
+        {
+            <div class="stat-tile">
+                <div class="tile-icon @t.Tone">
+                    <svg class="icon icon-lg"><use href="@("#" + t.IconId)" /></svg>
+                </div>
+                <div class="tile-body">
+                    <div class="tile-label">@t.Label</div>
+                    <div class="tile-value">@t.Value</div>
+                    <div class="tile-sub">@t.Sub</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- 4. Two-column mini-tables (Coverage by rail + Freshness by feed) -->
+    <div class="two-col-grid">
+        <div class="mini-table">
+            <h3>Coverage by rail</h3>
+            <p class="caption">How many schemes each rail sees in its master file.</p>
+            <table>
+                <tbody>
+                    <tr><td>NSE MFSS</td><td class="right">13,393</td></tr>
+                    <tr><td>BSE StAR MF</td><td class="right">phase 2 — pending</td></tr>
+                    <tr><td>MFU India</td><td class="right">phase 3 — pending</td></tr>
+                    <tr><td>CAMS RTA</td><td class="right">reconciliation only</td></tr>
+                    <tr><td>KFin RTA</td><td class="right">reconciliation only</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mini-table">
+            <h3>Freshness by feed</h3>
+            <p class="caption">Last successful ingestion time per source.</p>
+            <table>
+                <tbody>
+                    <tr><td>NSE scheme master</td><td class="right mono">09-Jul-2026 06:41</td></tr>
+                    <tr><td>NSE SIP eligibility</td><td class="right mono">09-Jul-2026 06:41</td></tr>
+                    <tr><td>NSE STP rules</td><td class="right mono">09-Jul-2026 06:41</td></tr>
+                    <tr><td>NSE SWP rules</td><td class="right mono">09-Jul-2026 06:41</td></tr>
+                    <tr><td>AMFI NAV</td><td class="right mono">pending Phase 2</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 5. Info panel — "Where does this feed?" -->
+    <div class="info-panel tone-slate">
+        <h3>Where does this feed?</h3>
+        <p>
+            The transactional apps (<strong>Invest</strong> · <strong>Funds</strong> · <strong>Track</strong> · <strong>Consume</strong>)
+            all read the scheme master registered here. When a scheme's <em>Purchase allowed</em> flag flips to false in
+            the daily NSE dump, the order-placement flow in <strong>Wealth · Invest</strong> disables Purchase for that
+            ISIN automatically — no code deploy needed. Same shape for SIP eligibility, redemption cutoffs, and
+            settlement cycle.
+        </p>
+    </div>
+</div>

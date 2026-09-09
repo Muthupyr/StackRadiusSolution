@@ -4,7 +4,6 @@ namespace StackRadius.Entity
 {
     public class MasterHistoryModel : JSONBaseClass
     {
-        public string Mode { get; set; }
         public int? Id { get; set; }
         public DateTime DownloadOn { get; set; }         
         public string Filename { get; set; }           

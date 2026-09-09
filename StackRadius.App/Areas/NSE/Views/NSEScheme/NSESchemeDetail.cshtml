@@ -1,0 +1,77 @@
+﻿@model StackRadius.Entity.NSESchemeMasterModel
+@{
+    ViewBag.Title = "NSE Scheme Detail";
+    ViewData["Title"] = "NSE Scheme Detail";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "nsescheme";
+    ViewData["FooterRight"] = "NSE MFSS Scheme catalogue — refreshed daily from NSE";
+}
+
+<title>@ViewBag.Title</title>
+
+@*
+    URL: /nse/NSESchemeDetail
+*@
+
+<form id="frmNSESchemeDetail" role="form" class="form-horizontal" method="post" action="javascript:;">
+    <!-- CommandBar -->
+    <div class="commandbar">
+    </div>
+
+    <button class="btn btn-lg bg-blue-grey cancel" style="text-align:right" tabindex="1" title="Back" id="btnCancel" onclick="location.href = '/NSE/NSEScheme/Index'">Back</button>
+
+    <h4>Scheme Name : @Model.scheme_name</h4>
+
+<div class="accordion" id="recordAccordion">
+
+    <!-- Section 1: Basic Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingBasic">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic">
+                Basic Information
+            </button>
+        </h2>
+        <div id="collapseBasic" class="accordion-collapse collapse show" aria-labelledby="headingBasic" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+                <p><strong>unique_sr_no:</strong> @Model.unique_sr_no</p>
+                <p><strong>scheme_code:</strong> @Model.scheme_code</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Contact Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingContact">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContact" aria-expanded="false" aria-controls="collapseContact">
+                Contact Details
+            </button>
+        </h2>
+        <div id="collapseContact" class="accordion-collapse collapse" aria-labelledby="headingContact" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+
+                <p><strong>isin:</strong> @Model.isin</p>
+                <p><strong>scheme_name:</strong> @Model.scheme_name</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Address Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingAddress">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddress" aria-expanded="false" aria-controls="collapseAddress">
+                Address Information
+            </button>
+        </h2>
+
+        <div id="collapseAddress" class="accordion-collapse collapse" aria-labelledby="headingAddress" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+                <p><strong>scheme_name:</strong> @Model.scheme_name</p>
+                <p><strong>scheme_type:</strong> @Model.scheme_type</p>
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>
+                                
+<button class="btn btn-lg bg-blue-grey cancel" style="text-align:right" tabindex="9" title="Back" id="btnCancel" onclick="location.href = '/NSE/NSEScheme/Index'">Back</button>
+</form>

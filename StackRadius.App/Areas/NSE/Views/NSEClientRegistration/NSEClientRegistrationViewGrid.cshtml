@@ -1,0 +1,191 @@
+﻿@model IEnumerable<StackRadius.Entity.NSEClientRegistrationModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "NSE Client Registration";
+    ViewData["Title"] = "NSE Client Registration";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "clientregistration";
+    ViewData["FooterRight"] = "NSE Client Registration";
+}
+
+<style>
+    .button-group {
+        display: flex; /* Forces items into a row */
+        gap: 8px; /* Adds nice spacing between buttons */
+        align-items: center; /* Aligns them perfectly vertically */
+    }
+</style>
+
+<title>@ViewBag.Title</title>
+
+@*
+    Pages/Master/Nse/NseScheme.cshtml
+    URL: http://localhost:5220/nse/NSEScheme
+
+    Reference DATA GRID page. Shows the shape a "list of records" screen
+    takes — CommandBar + full-height sortable table with pill-styled cells.
+    A dev cloning this pattern for a new entity (Sip, Mandate, Portfolio, …)
+    should copy this file + the code-behind, adjust SchemeRow → their entity,
+    and change the <table> columns.
+*@
+
+<form id="frmNSEClientRegistration" role="form" class="form-horizontal" method="post" action="javascript:;">
+
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div> Loading...
+    </div>
+
+    <!-- CommandBar -->
+    <div class="commandbar">
+        <div class="commandbar-entity">
+            <svg class="icon"><use href="#i-book" /></svg>
+        </div>
+
+        <button type="button" class="commandbar-btn">
+            <svg class="icon"><use href="#i-plus" /></svg>
+            Add
+        </button>
+        <button type="button" id="btnDownload" class="commandbar-btn">
+            <svg class="icon"><use href="#i-refresh" /></svg>
+            Refresh from NSE
+        </button>
+        <div class="commandbar-divider"></div>
+        <button type="button" class="commandbar-btn">
+            <svg class="icon"><use href="#i-filter" /></svg>
+            Filters
+        </button>
+        <div class="commandbar-right">
+            <button type="button" class="commandbar-btn">
+                <svg class="icon"><use href="#i-download" /></svg>
+                Export CSV
+            </button>
+        </div>
+    </div>
+
+    <div class="grid-wrap">
+        <table id="tblNSEClientRegistration" class="grid-table">
+            <thead>
+                <tr>
+                    <th style="width:5%;">
+                        <input type="checkbox" id="chkbox" class="allchk" disabled="disabled">
+                    </th>
+
+                    <th>Client Code:</th>                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var s in Model)
+                    {                  
+                        <tr>
+                            <td style="width:5%;">
+                                @if (@s.client_code != "1")
+                                {
+                                    <input type="checkbox" id="chkbox" class="singlrchk" disabled="disabled" client_code="@s.client_code">
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="chkbox" class="singlrchk" disabled client_code="@s.client_code">
+                                }
+                            </td>
+                            <td class="mono">@s.client_code</td>                           
+                            <td>
+                                <div>
+                                    <button type="button" id="btnView" value="@s.client_code" class="commandbar-btn">
+                                        <svg class="icon"><use href="#i-filter"></use></svg>
+                                    </button>
+                                    <button type="button" id="btnEdit" value="@s.client_code" class="commandbar-btn"> 
+                                        <svg class="icon"><use href="#i-filter" /></svg> 
+                                    </button>
+                                    <button type="button" id="btnDelete" value="@s.client_code" class="commandbar-btn"> 
+                                        <svg class="icon"><use href="#i-filter" /></svg>
+                                    </button>
+                                </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+</form>
+
+<script type="text/javascript">
+
+    $("#btnView").click(function () { Process({ controller: "NSE/NSEScheme", action: "Edit", data: { mode: "View", id: $(this).attr("value") } }) });
+
+    //$("#btnAddNew").click(function () { Process({ controller: "NSEScheme", action: "Add" }); });
+    //$("#btnEdit").click(function () { Process({ controller: "NSEScheme", action: "Edit", data: { mode: "Edit", id: $(this).attr("value") } }) });
+    //GridExport({ columns: [0, 1, 2, 3, 4, 5], table: table = $('#tblNSEScheme').DataTable(), title: "NSE Schemes List" });
+
+</script>
+
+<script>
+    $('#btnDownload').click(function() {
+
+        const spinner = document.getElementById('loading-spinner');
+
+         // 1. Show the spinner before starting the request
+         spinner.style.display = 'block';
+
+        $("#btnDownload").prop('disabled', true);
+         var x = $("#frmNSEScheme").serialize();
+         //alert('data: ' + JSON.stringify(x));
+
+        var fileType = $("#FileType").val(); // "SCH"
+        //swal("", "Selected file type : " + fileType + ".", "success");
+        if (fileType == "" || fileType == null) {
+            swal("", "Please select a File Type. FileType :" + fileType + ".", "error");
+            $("#btnDownload").prop('disabled', false);
+            return false;
+        }
+
+        $.ajax({
+            url: '@Url.Action("DownloadFile", "MasterDownload")',
+            type: 'POST',
+            data: $("#frmNSEScheme").serialize(),
+
+            success: function(result) {
+                // alert('result: ' + JSON.stringify(result));
+                // console.log(result);
+                // alert('message: ' + result.message);
+                // alert('status: ' + result.status);
+
+                if (result.status == "Success") {
+                    //swal("", result.message, "success");
+
+                    swal({
+                        title: "",
+                        text: result.message,
+                        type: "success",
+                        closeOnConfirm: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "success"
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            // reload with the new data
+                            window.location.href = '@Url.Action("Index", "NSEScheme")'
+                        }
+                    });
+
+                    $("#btnDownload").prop('disabled', false);
+
+                }
+                else {
+                    swal("", result.message, "error");
+                    $("#btnDownload").prop('disabled', false);
+                }
+                spinner.style.display = 'none';
+            },
+            error: function(xhr, status, error) {
+                swal("", "Error occurred while downloading file : " + error, "error");
+                $("#btnDownload").prop('disabled', false);
+                spinner.style.display = 'none';
+            }
+        });
+    });
+
+</script>

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<StackRadius.Entity.ClientModel>
 @{
     ViewBag.Title = "Client List";
-    //Layout = "~/Views/Shared/MasterPage.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <form asp-controller="Client" method="post">   
 <div class="container-fluid">
@@ -15,7 +15,7 @@
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                            <button type="submit" asp-action="Add">Add New Client</button>
+                            <button type="submit" asp-action="Add" style="text-align: right;">Add New Client</button>
                             <table id="tblClient" class="table table-bordered table-striped table-hover dataTable js-exportable table-wrap">
                             <thead>
                                 <tr>
@@ -42,19 +42,20 @@
                             <tbody>
                                 @if (Model.Count() > 0)
                                 {
-                                    var Sortlst = Model.OrderBy(x => x.ClientId);
+                                    var Sortlst = Model.OrderBy(x => x.clientId);
                                     foreach (var lst in Sortlst)
                                     {
                                         <tr>
-                                            <td>@lst.ClientId</td>
+                                            <td>@lst.clientId</td>
+                                             <td>@lst.clientName</td>
                                             <td>@lst.amcCode</td>
                                             <td>@lst.panNo</td>
                                             <td>@lst.mobileNo</td>
                                             <td>@lst.invEmail</td>
                                             <td>Active</td>
                                             <td class="table-action w12">
-                                                <button type="submit" asp-action="Edit" asp-route-id="@lst.ClientId">Edit</button> 
-                                                <a href='#' class='btnDelete' value="@lst.ClientId" title='Delete'>Delete</a> 
+                                                <button type="submit" asp-action="Edit" asp-route-id="@lst.clientId">Edit</button> 
+                                                <a href='#' class='btnDelete' value="@lst.clientId" title='Delete'>Delete</a> 
                                             </td>
                                         </tr>
                                     }
@@ -79,8 +80,8 @@
 
 <script type="text/javascript">
     // $("#btnAddNew").click(function () { Process({ controller: "AddClient", action: "Add" }); });
-    // $(".btnEdit").click(function () { Process({ controller: "AddClient", action: "Edit", data: { mode: "Edit", ClientId: $(this).attr("value") } }) });
-    // $(".btnView").click(function () { Process({ controller: "AddClient", action: "Edit", data: { mode: "View", ClientId: $(this).attr("value") } }) });
+    // $(".btnEdit").click(function () { Process({ controller: "AddClient", action: "Edit", data: { mode: "Edit", clientId: $(this).attr("value") } }) });
+    // $(".btnView").click(function () { Process({ controller: "AddClient", action: "Edit", data: { mode: "View", clientId: $(this).attr("value") } }) });
     // $('#tblAddClient').on('click', 'a.btnDelete', function (e) { GridDelete({ value: $(this).attr("value"), table: table = $('#tblClient').DataTable(),  url: "/ClientAdd/Delete", maintainvalue: this}); });
     //GridExport({ columns: [0, 1, 2, 3, 4, 5], table: table = $('#tblClient').DataTable(), title: "AddClient List" });
 

@@ -120,7 +120,7 @@ CREATE INDEX IF NOT EXISTS ix_scheme_master_sip_allowed
 -- Select * from nse_scheme_master_getall_fn();
 CREATE OR REPLACE FUNCTION public.nse_scheme_master_getall_fn(
 	)
-    RETURNS TABLE(unique_sr_no integer,scheme_code text 	,rta_scheme_code text 	,amc_scheme_code text 	,isin text 	,amc_code text 	,scheme_type text 	,plan_type text 	,scheme_name text 	,purchase_allowed text 	,purchase_transaction_mode text 	,new_purchase_min_amount numeric(14,2),additional_purchase_min_amount numeric(12,2),additional_purchase_max_amount integer,purchase_amount_multiplier numeric(13,2),purchase_cutoff_time time without time zone,redemption_allowed text 	,redemption_transaction_mode text 	,redemption_min_qty numeric(10,3),redemption_qty_multiplier numeric(8,3),redemption_max_qty integer,redemption_min_amount numeric(12,2),redemption_max_amount bigint,redemption_amount_multiplier numeric(10,2),redemption_cutoff_time time without time zone,rta_agent_code text 	,amc_active_flag text 	,div_reinvest_flag text 	,sip_allowed text 	,stp_enabled text 	,swp_enabled text 	,switch_allowed text 	,settlement_type text 	,amc_ind text 	,face_value integer,scheme_start_date date,maturity_date date,exit_load_flag text 	,exit_load text 	,lock_in_period_flag text 	,lock_in_period integer,channel_partner_code text 	,reopening_date date,open_close_ended_scheme text) 
+    RETURNS TABLE(unique_sr_no integer,scheme_code text, rta_scheme_code text, amc_scheme_code text, isin text, amc_code text, scheme_type text, plan_type text, scheme_name text, purchase_allowed text, purchase_transaction_mode text, new_purchase_min_amount numeric(14,2),additional_purchase_min_amount numeric(12,2),additional_purchase_max_amount integer,purchase_amount_multiplier numeric(13,2),purchase_cutoff_time time without time zone,redemption_allowed text, redemption_transaction_mode text, redemption_min_qty numeric(10,3),redemption_qty_multiplier numeric(8,3),redemption_max_qty integer,redemption_min_amount numeric(12,2),redemption_max_amount bigint,redemption_amount_multiplier numeric(10,2),redemption_cutoff_time time without time zone,rta_agent_code text, amc_active_flag text, div_reinvest_flag text, sip_allowed text, stp_enabled text, swp_enabled text, switch_allowed text, settlement_type text, amc_ind text, face_value integer,scheme_start_date date,maturity_date date,exit_load_flag text, exit_load text, lock_in_period_flag text, lock_in_period integer,channel_partner_code text, reopening_date date,open_close_ended_scheme text) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -136,6 +136,25 @@ ALTER FUNCTION public.nse_scheme_master_getall_fn()
     OWNER TO postgres;
 
 ------------------------------------------------------------------------------
+-- FUNCTION: public.nse_scheme_master_get_by_id_fn(integer)
+-- DROP FUNCTION IF EXISTS public.nse_scheme_master_get_by_id_fn(integer);
+-- Select * from nse_scheme_master_get_by_id_fn(1)
+CREATE OR REPLACE FUNCTION public.nse_scheme_master_get_by_id_fn(p_unique_sr_no integer)
+    RETURNS TABLE(unique_sr_no integer,scheme_code text, rta_scheme_code text, amc_scheme_code text, isin text, amc_code text, scheme_type text, plan_type text, scheme_name text, purchase_allowed text, purchase_transaction_mode text, new_purchase_min_amount numeric(14,2),additional_purchase_min_amount numeric(12,2),additional_purchase_max_amount integer,purchase_amount_multiplier numeric(13,2),purchase_cutoff_time time without time zone,redemption_allowed text, redemption_transaction_mode text, redemption_min_qty numeric(10,3),redemption_qty_multiplier numeric(8,3),redemption_max_qty integer,redemption_min_amount numeric(12,2),redemption_max_amount bigint,redemption_amount_multiplier numeric(10,2),redemption_cutoff_time time without time zone,rta_agent_code text, amc_active_flag text, div_reinvest_flag text, sip_allowed text, stp_enabled text, swp_enabled text, switch_allowed text, settlement_type text, amc_ind text, face_value integer,scheme_start_date date,maturity_date date,exit_load_flag text, exit_load text, lock_in_period_flag text, lock_in_period integer,channel_partner_code text, reopening_date date,open_close_ended_scheme text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1
+AS $BODY$
+    BEGIN
+        RETURN QUERY SELECT * FROM nse_scheme_master
+			WHERE nse_scheme_master.unique_sr_no =p_unique_sr_no;
+    END;
+$BODY$;
+ALTER FUNCTION public.nse_scheme_master_get_by_id_fn(integer)
+    OWNER TO postgres;
+-- --------------------------------------------------------------------------
+
 -- PROCEDURE: public.nse_scheme_master_sp(character varying, jsonb)
 -- DROP PROCEDURE IF EXISTS public.nse_scheme_master_sp(character varying, jsonb);
 -- Call nse_scheme_master_sp('INSERT', '{"unique_sr_no": 1434, "new_purchase_min_amount":100,"purchase_cutoff_time":"12:50","open_close_ended_scheme": "Close"}');

@@ -1,0 +1,28 @@
+@*
+    _BreadCrumb.cshtml — the strip below the top nav.
+    Renders [Master › Area › SubArea] with a copy-URL button at the right.
+    Model: IReadOnlyList<StackRadius.Entity.BreadcrumbItem>
+*@
+@model IReadOnlyList<StackRadius.Entity.BreadcrumbItem>
+<div class="breadcrumb">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var item = Model[i];
+        var isLast = i == Model.Count - 1;
+        if (item.Href is not null && !isLast)
+        {
+            <a class="crumb" href="@item.Href">@item.Label</a>
+        }
+        else
+        {
+            <span class="crumb @(isLast ? "active" : "")">@item.Label</span>
+        }
+        @if (!isLast)
+        {
+            <span class="sep">›</span>
+        }
+    }
+    <button type="button" class="breadcrumb-copy" title="Copy URL">
+        <svg class="icon"><use href="#i-copy"/></svg>
+    </button>
+</div>

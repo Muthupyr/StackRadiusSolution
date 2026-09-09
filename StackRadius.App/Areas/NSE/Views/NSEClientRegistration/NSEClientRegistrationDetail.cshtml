@@ -1,0 +1,288 @@
+﻿@model StackRadius.Entity.NSEClientRegistrationModel
+@{
+   Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "NSE Client Registration Detail";
+    ViewData["Title"] = "NSE Client Registration Detail";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "clientregistration";
+    ViewData["FooterRight"] = "NSE Client Registration";
+}
+
+<title>@ViewBag.Title</title>
+
+@*
+    URL: /nse/NSEClientRegistration
+*@
+
+<form id="frmNSEClientRegistrationDetail" role="form" class="form-horizontal" method="post" action="javascript:;">
+
+    <button class="btn btn-lg bg-blue-grey cancel" style="text-align:right" tabindex="1" title="Back" id="btnCancel" onclick="location.href = '/Dashboard/Dashboard'">Back</button>
+    
+    <h2 class="mb-0">Detailed View</h2>
+    <button type="button" class="btn btn-sm btn-outline-secondary close-detail">Back to list</button>
+
+    <div class="accordion" id="recordAccordion">
+
+    <!-- Section 1: Basic Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingBasic">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic">
+                Basic Information
+            </button>
+        </h2>
+        <div id="collapseBasic" class="accordion-collapse collapse show" aria-labelledby="headingBasic" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+                <p><strong>Client Code:</strong> @Model.client_code</p>
+			    <p><strong>Primary Holder First Name:</strong> @Model.primary_holder_first_name</p>
+			    <p><strong>Primary Holder Middle Name:</strong> @Model.primary_holder_middle_name</p>
+			    <p><strong>Primary Holder Last Name:</strong> @Model.primary_holder_last_name</p>
+			    <p><strong>Tax Status:</strong> @Model.tax_status</p>
+		        <p><strong>Gender:</strong>@Model.gender</p> 
+			    <p><strong>Primary Holder DOB / Incorporation:</strong> @Model.primary_holder_dob_incorporation</p>
+			    <p><strong>Occupation Code:</strong> @Model.occupation_code</p>
+			    <p><strong>Holding Nature:</strong> @Model.holding_nature</p>
+            </div>
+        </div>
+    </div>
+
+
+     <!-- Section 2: Contact Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingContact">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContact" aria-expanded="false" aria-controls="collapseContact">
+                Second Holder Information
+            </button>
+        </h2>
+        <div id="collapseContact" class="accordion-collapse collapse" aria-labelledby="headingContact" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+                <p><strong>Second Holder First Name:</strong> @Model.second_holder_first_name</p>
+			    <p><strong>Second Holder Middle Name:</strong> @Model.second_holder_middle_name</p>
+			    <p><strong>Second Holder Last Name:</strong> @Model.second_holder_last_name</p>
+			    <p><strong>Second Holder DOB:</strong> @Model.second_holder_dob</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Third Holder Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThird">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThird" aria-expanded="false" aria-controls="collapseThird">
+                Third Holder Information
+            </button>
+        </h2>
+        <div id="collapseThird" class="accordion-collapse collapse" aria-labelledby="headingThird" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+                <p><strong>Third Holder First Name:</strong> @Model.third_holder_first_name</p>
+			    <p><strong>Third Holder Middle Name:</strong> @Model.third_holder_middle_name</p>
+			    <p><strong>Third Holder Last Name:</strong> @Model.third_holder_last_name</p>
+			    <p><strong>Third Holder DOB:</strong> @Model.third_holder_dob</p>
+            </div>
+        </div>
+        <hr />
+    </div>
+
+     <!-- Section 4: Other Info -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOther">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOther" aria-expanded="false" aria-controls="collapseOther">
+                Other Information
+            </button>
+        </h2>
+            <div id="collapseOther" class="accordion-collapse collapse" aria-labelledby="headingOther" data-bs-parent="#recordAccordion">
+            <div class="accordion-body">
+                <p><strong>Second Holder DOB:</strong> @Model.second_holder_dob</p>
+                <p><strong>Guardian First Name:</strong> @Model.guardian_first_name</p>
+                <p><strong>Guardian Middle Name:</strong> @Model.guardian_middle_name</p>
+                <p><strong>Guardian Last Name:</strong> @Model.guardian_last_name</p>
+                <p><strong>Guardian DOB:</strong> @Model.guardian_dob</p>
+                <p><strong>Primary Holder PAN Exempt:</strong> @Model.primary_holder_pan_exempt</p>
+                <p><strong>Second Holder PAN Exempt:</strong> @Model.second_holder_pan_exempt</p>
+                <p><strong>Third Holder PAN Exempt:</strong> @Model.third_holder_pan_exempt</p>
+                <p><strong>Guardian PAN Exempt:</strong> @Model.guardian_pan_exempt</p>
+                <p><strong>Primary Holder PAN:</strong> @Model.primary_holder_pan</p>
+                <p><strong>Second Holder PAN:</strong> @Model.second_holder_pan</p>
+                <p><strong>Third Holder PAN:</strong> @Model.third_holder_pan</p>
+                <p><strong>Guardian PAN:</strong> @Model.guardian_pan</p>
+                <p><strong>Primary Holder Exempt Category:</strong> @Model.primary_holder_exempt_category</p>
+                <p><strong>Second Holder Exempt Category:</strong> @Model.second_holder_exempt_category</p>
+                <p><strong>Third Holder Exempt Category:</strong> @Model.third_holder_exempt_category</p>
+                <p><strong>Guardian Exempt Category:</strong> @Model.guardian_exempt_category</p>
+                <p><strong>Client Type:</strong> @Model.client_type</p>
+                <p><strong>PMS:</strong> @Model.pms</p>
+                <p><strong>Default DP:</strong> @Model.default_dp</p>
+                <p><strong>CDSL DPID:</strong> @Model.cdsl_dpid</p>
+                <p><strong>CDSL Client ID:</strong> @Model.cdslcltid</p>
+                <p><strong>CMBP ID:</strong> @Model.cmbp_id</p>
+                <p><strong>NSDL DPID:</strong> @Model.nsdldpid</p>
+                <p><strong>NSDL Client ID:</strong> @Model.nsdlcltid</p>
+                <p><strong>Account Type 1:</strong> @Model.account_type_1</p>
+                <p><strong>Account No 1:</strong> @Model.account_no_1</p>
+                <p><strong>MICR No 1:</strong> @Model.micr_no_1</p>
+                <p><strong>IFSC Code 1:</strong> @Model.ifsc_code_1</p>
+                <p><strong>Default Bank Flag 1:</strong> @Model.default_bank_flag_1</p>
+                <p><strong>Account Type 2:</strong> @Model.account_type_2</p>
+                <p><strong>Account No 2:</strong> @Model.account_no_2</p>
+                <p><strong>MICR No 2:</strong> @Model.micr_no_2</p>
+                <p><strong>IFSC Code 2:</strong> @Model.ifsc_code_2</p>
+                <p><strong>Default Bank Flag 2:</strong> @Model.default_bank_flag_2</p>
+                <p><strong>Account Type 3:</strong> @Model.account_type_3</p>
+                <p><strong>Account No 3:</strong> @Model.account_no_3</p>
+                <p><strong>MICR No 3:</strong> @Model.micr_no_3</p>
+                <p><strong>IFSC Code 3:</strong> @Model.ifsc_code_3</p>
+                <p><strong>Default Bank Flag 3:</strong> @Model.default_bank_flag_3</p>
+                <p><strong>Account Type 4:</strong> @Model.account_type_4</p>
+                <p><strong>Account No 4:</strong> @Model.account_no_4</p>
+                <p><strong>MICR No 4:</strong> @Model.micr_no_4</p>
+                <p><strong>IFSC Code 4:</strong> @Model.ifsc_code_4</p>
+                <p><strong>Default Bank Flag 4:</strong> @Model.default_bank_flag_4</p>
+                <p><strong>Account Type 5:</strong> @Model.account_type_5</p>
+                <p><strong>Account No 5:</strong> @Model.account_no_5</p>
+                <p><strong>MICR No 5:</strong> @Model.micr_no_5</p>
+                <p><strong>IFSC Code 5:</strong> @Model.ifsc_code_5</p>
+                <p><strong>Default Bank Flag 5:</strong> @Model.default_bank_flag_5</p>
+                <p><strong>Cheque Name:</strong> @Model.cheque_name</p>
+                <p><strong>Dividend Pay Mode:</strong> @Model.div_pay_mode</p>
+                <p><strong>Address 1:</strong> @Model.address_1</p>
+                <p><strong>Address 2:</strong> @Model.address_2</p>
+                <p><strong>Address 3:</strong> @Model.address_3</p>
+                <p><strong>City:</strong> @Model.city</p>
+                <p><strong>State:</strong> @Model.state</p>
+                <p><strong>Pincode:</strong> @Model.pincode</p>
+                <p><strong>Country:</strong> @Model.country</p>
+                <p><strong>Residence Phone:</strong> @Model.resi_phone</p>
+                <p><strong>Residence Fax:</strong> @Model.resi_fax</p>
+                <p><strong>Office Phone:</strong> @Model.office_phone</p>
+                <p><strong>Office Fax:</strong> @Model.office_fax</p>
+                <p><strong>Email:</strong> @Model.email</p>
+                <p><strong>Communication Mode:</strong> @Model.communication_mode</p>
+                <p><strong>Foreign Address 1:</strong> @Model.foreign_address_1</p>
+                <p><strong>Foreign Address 2:</strong> @Model.foreign_address_2</p>
+                <p><strong>Foreign Address 3:</strong> @Model.foreign_address_3</p>
+                <p><strong>Foreign Address City:</strong> @Model.foreign_address_city</p>
+                <p><strong>Foreign Address Pincode:</strong> @Model.foreign_address_pincode</p>
+                <p><strong>Foreign Address State:</strong> @Model.foreign_address_state</p>
+                <p><strong>Foreign Address Country:</strong> @Model.foreign_address_country</p>
+                <p><strong>Foreign Address Residence Phone:</strong> @Model.foreign_address_resi_phone</p>
+                <p><strong>Foreign Address Fax:</strong> @Model.foreign_address_fax</p>
+                <p><strong>Foreign Address Office Phone:</strong> @Model.foreign_address_off_phone</p>
+                <p><strong>Foreign Address Office Fax:</strong> @Model.foreign_address_off_fax</p>
+                <p><strong>Indian Mobile No:</strong> @Model.indian_mobile_no</p>
+                <p><strong>Primary Holder KYC Type:</strong> @Model.primary_holder_kyc_type</p>
+                <p><strong>Primary Holder CKYC Number:</strong> @Model.primary_holder_ckyc_number</p>
+                <p><strong>Second Holder KYC Type:</strong> @Model.second_holder_kyc_type</p>
+                <p><strong>Second Holder CKYC Number:</strong> @Model.second_holder_ckyc_number</p>
+                <p><strong>Third Holder KYC Type:</strong> @Model.third_holder_kyc_type</p>
+                <p><strong>Third Holder CKYC Number:</strong> @Model.third_holder_ckyc_number</p>
+                <p><strong>Guardian KYC Type:</strong> @Model.guardian_kyc_type</p>
+                <p><strong>Guardian CKYC Number:</strong> @Model.guardian_ckyc_number</p>
+                <p><strong>Primary Holder KRA Exempt Ref No:</strong> @Model.primary_holder_kra_exempt_ref_no</p>
+                <p><strong>Second Holder KRA Exempt Ref No:</strong> @Model.second_holder_kra_exempt_ref_no</p>
+                <p><strong>Third Holder KRA Exempt Ref No:</strong> @Model.third_holder_kra_exempt_ref_no</p>
+                <p><strong>Guardian Exempt Ref No:</strong> @Model.guardian_exempt_ref_no</p>
+                <p><strong>Aadhaar Updated:</strong> @Model.aadhaar_updated</p>
+                <p><strong>MAPIN ID:</strong> @Model.mapin_id</p>
+                <p><strong>Paperless Flag:</strong> @Model.paperless_flag</p>
+                <p><strong>LEI No:</strong> @Model.lei_no</p>
+                <p><strong>LEI Validity:</strong> @Model.lei_validity</p>
+                <p><strong>Mobile Declaration Flag:</strong> @Model.mobile_declaration_flag</p>
+                <p><strong>Email Declaration Flag:</strong> @Model.email_declaration_flag</p>
+                <p><strong>Second Holder Email:</strong> @Model.second_holder_email</p>
+                <p><strong>Second Holder Email Declaration:</strong> @Model.second_holder_email_declaration</p>
+                <p><strong>Second Holder Mobile:</strong> @Model.second_holder_mobile</p>
+                <p><strong>Second Holder Mobile Declaration (v1):</strong> @Model.second_holder_mobiledeclaration</p>
+                <p><strong>Second Holder Mobile Declaration (v2):</strong> @Model.second_holder_mobile_declaration</p>
+                <p><strong>Third Holder Email:</strong> @Model.third_holder_email</p>
+                <p><strong>Third Holder Email Declaration:</strong> @Model.third_holder_email_declaration</p>
+                <p><strong>Third Holder Mobile:</strong> @Model.third_holder_mobile</p>
+                <p><strong>Third Holder Mobile Declaration:</strong> @Model.third_holder_mobile_declaration</p>
+                <p><strong>Guardian Relation:</strong> @Model.guardian_relation</p>
+                <p><strong>Nomination Opt:</strong> @Model.nomination_opt</p>
+                <p><strong>Nomination Authentication:</strong> @Model.nomination_authentication</p>
+                <p><strong>Nominee 1 Name:</strong> @Model.nominee_1_name</p>
+                <p><strong>Nominee 1 Relationship:</strong> @Model.nominee_1_relationship</p>
+                <p><strong>Nominee 1 Applicable %:</strong> @Model.nominee_1_applicable</p>
+                <p><strong>Nominee 1 Minor Flag:</strong> @Model.nominee_1_minor_flag</p>
+                <p><strong>Nominee 1 DOB:</strong> @Model.nominee_1_dob</p>
+                <p><strong>Nominee 1 Guardian:</strong> @Model.nominee_1_guardian</p>
+                <p><strong>Nominee 1 Guardian PAN:</strong> @Model.nominee_1_guardian_pan</p>
+                <p><strong>Nominee 1 Identity Type:</strong> @Model.nominee_1_identity_type</p>
+                <p><strong>Nominee 1 Identity Number:</strong> @Model.nominee_1_identity_number</p>
+                <p><strong>Nominee 1 Email:</strong> @Model.nominee_1_email</p>
+                <p><strong>Nominee 1 Mobile:</strong> @Model.nominee_1_mobile</p>
+                <p><strong>Nominee 1 Address 1:</strong> @Model.nominee_1_address1</p>
+                <p><strong>Nominee 1 Address 2:</strong> @Model.nominee_1_address2</p>
+                <p><strong>Nominee 1 Address 3:</strong> @Model.nominee_1_address3</p>
+                <p><strong>Nominee 1 City:</strong> @Model.nominee_1_city</p>
+                <p><strong>Nominee 1 Pin:</strong> @Model.nominee_1_pin</p>
+                <p><strong>Nominee 1 Country:</strong> @Model.nominee_1_country</p>
+                <p><strong>Nominee 2 Name:</strong> @Model.nominee_2_name</p>
+                <p><strong>Nominee 2 Relationship:</strong> @Model.nominee_2_relationship</p>
+                <p><strong>Nominee 2 Applicable %:</strong> @Model.nominee_2_applicable</p>
+                <p><strong>Nominee 2 DOB:</strong> @Model.nominee_2_dob</p>
+                <p><strong>Nominee 2 Minor Flag:</strong> @Model.nominee_2_minor_flag</p>
+                <p><strong>Nominee 2 Guardian:</strong> @Model.nominee_2_guardian</p>
+                <p><strong>Nominee 2 Guardian PAN:</strong> @Model.nominee_2_guardian_pan</p>
+                <p><strong>Nominee 2 Identity Type:</strong> @Model.nominee_2_identity_type</p>
+                <p><strong>Nominee 2 Identity Number:</strong> @Model.nominee_2_identity_number</p>
+                <p><strong>Nominee 2 Email:</strong> @Model.nominee_2_email</p>
+                <p><strong>Nominee 2 Mobile:</strong> @Model.nominee_2_mobile</p>
+                <p><strong>Nominee 2 Address 1:</strong> @Model.nominee_2_address1</p>
+                <p><strong>Nominee 2 Address 2:</strong> @Model.nominee_2_address2</p>
+                <p><strong>Nominee 2 Address 3:</strong> @Model.nominee_2_address3</p>
+                <p><strong>Nominee 2 City:</strong> @Model.nominee_2_city</p>
+                <p><strong>Nominee 2 Pin:</strong> @Model.nominee_2_pin</p>
+                <p><strong>Nominee 2 Country:</strong> @Model.nominee_2_country</p>
+                <p><strong>Nominee 3 Name:</strong> @Model.nominee_3_name</p>
+                <p><strong>Nominee 3 Relationship:</strong> @Model.nominee_3_relationship</p>
+                <p><strong>Nominee 3 Applicable %:</strong> @Model.nominee_3_applicable</p>
+                <p><strong>Nominee 3 DOB:</strong> @Model.nominee_3_dob</p>
+                <p><strong>Nominee 3 Minor Flag:</strong> @Model.nominee_3_minor_flag</p>
+                <p><strong>Nominee 3 Guardian:</strong> @Model.nominee_3_guardian</p>
+                <p><strong>Nominee 3 Guardian PAN:</strong> @Model.nominee_3_guardian_pan</p>
+                <p><strong>Nominee 3 Identity Type:</strong> @Model.nominee_3_identity_type</p>
+                <p><strong>Nominee 3 Identity Number:</strong> @Model.nominee_3_identity_number</p>
+                <p><strong>Nominee 3 Email:</strong> @Model.nominee_3_email</p>
+                <p><strong>Nominee 3 Mobile:</strong> @Model.nominee_3_mobile</p>
+                <p><strong>Nominee 3 Address 1:</strong> @Model.nominee_3_address1</p>
+                <p><strong>Nominee 3 Address 2:</strong> @Model.nominee_3_address2</p>
+                <p><strong>Nominee 3 Address 3:</strong> @Model.nominee_3_address3</p>
+                <p><strong>Nominee 3 City:</strong> @Model.nominee_3_city</p>
+                <p><strong>Nominee 3 Pin:</strong> @Model.nominee_3_pin</p>
+                <p><strong>Nominee 3 Country:</strong> @Model.nominee_3_country</p>
+                <p><strong>Nominee SOA:</strong> @Model.nominee_soa</p>
+                <p><strong>Reg ID:</strong> @Model.reg_id</p>
+                <p><strong>Reg Remark:</strong> @Model.reg_remark</p>
+                <p><strong>Reg Status:</strong> @Model.reg_status</p>
+                <p><strong>Reg Details:</strong> @Model.reg_details</p>
+            </div>
+        </div>
+    </div>
+
+                                    
+    <button class="btn btn-lg bg-blue-grey cancel" style="text-align:right" tabindex="9" title="Back" id="btnCancel" onclick="location.href = '/NSE/Dashboard/Dashboard'">Back</button>
+</form>
+
+
+@* Script for the grid so the grid can clicked 
+<script>
+    document.querySelectorAll('.grid-table tbody tr').forEach(function (tr) {
+        tr.addEventListener('click', function () {
+            document.querySelector('.grid-wrap').classList.add('d-none');
+            document.querySelector('.commandbar').classList.add('d-none');
+            document.getElementById('detail-' + tr.dataset.code).classList.remove('d-none');
+            window.scrollTo(0, 0);
+        });
+    });
+
+    document.querySelectorAll('.close-detail').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            btn.closest('.detail-pane').classList.add('d-none');
+            document.querySelector('.grid-wrap').classList.remove('d-none');
+            document.querySelector('.commandbar').classList.remove('d-none');
+        });
+    });
+</script>
+*@
+@* if there is an error in table kindly use this 
+<tr data-code="@Model.client_code" style="cursor:pointer">*@

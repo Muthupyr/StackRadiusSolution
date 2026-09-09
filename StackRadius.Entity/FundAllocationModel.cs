@@ -2,7 +2,6 @@
 {
     public class FundAllocationModel : JSONBaseClass
     {
-        public string Mode { get; set; }
         public string cfppgbankrefno { get; set; } // "2026020900004",
         public string order_number { get; set; } // "460400000296",
         public string duplicatepgbank { get; set; } // " ",

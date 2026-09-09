@@ -197,14 +197,14 @@ namespace StackRadius.DBHelper
             DataTable dt = new DataTable();
 
             // 2. Add columns to the DataTable first
-            dt.Columns.Add("ClientId", typeof(int));
+            dt.Columns.Add("clientId", typeof(int));
             dt.Columns.Add("amcCode", typeof(string));
 
             // 3. Create a new DataRow based on the updated DataTable schema
             DataRow newRow = dt.NewRow();
 
             // 4. Assign data values to the specific row columns
-            newRow["ClientId"] = 18888;
+            newRow["clientId"] = 18888;
             newRow["amcCode"] = "J";
 
             // 5. Add the populated DataRow into the DataTable

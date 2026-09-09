@@ -1,7 +1,21 @@
 ﻿@model StackRadius.Entity.ClientModel
 @{
-    ViewBag.Title = "Add Client";
+    ViewBag.Title = "Client Add";
+    ViewData["Title"] = "NSE Client";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "nseclient";
+    ViewData["FooterRight"] = "NSE refreshed daily from NSE";
 }
+
+<style>
+.col-red {
+          color:red ; 
+
+      /* background-color: white;optional for readability */
+    }
+</style>
+
+<title>@ViewBag.Title</title>
 
 <div class="container-fluid">
     <div class="row clearfix">
@@ -33,19 +47,23 @@
                                     <b>Client Id</b><span class="col-red">*</span>
                                     <div class="input-group m-b-0">                                        
                                         <div class="form-line">
-                                            @Html.TextBoxFor(a => a.ClientId, new { @class = "form-control numericOnly required", id = "ClientId", @maxlength = 8, placeholder = "Client Id" })
+                                            @Html.TextBoxFor(a => a.clientId, new { @class = "form-control numericOnly", id = "clientId", @maxlength = 8, placeholder = "Client Id", required = "required"  })
                                         </div>
                                     </div>
-                                </div>     
+                                </div>   
+                                 <div class="col-md-4">
+                                    <b>Client Name</b><span class="col-red">*</span>
+                                    <div class="input-group m-b-0">                                        
+                                        <div class="form-line">
+                                            @Html.TextBoxFor(a => a.clientName, new { @class = "form-control", id = "clientName", @maxlength = 50, placeholder = "Client Name", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>   
                                  <div class="col-md-4">
                                     <b>AMC Code:</b><span class="col-red">*</span>
                                     <div class="input-group m-b-0">
                                         <div>
-                                            @*    
-                                                @Html.TextBoxFor(a => a.amcCode, new { @class = "form-control", id = "amcCode", @maxlength = 10, placeholder = "AMC Code" })
-                                                @Html.DropDownListFor(a => a.amcCode, Model.AMCCodeList, new { tabindex = "6", @class = "form-control required", @onchange = "amcCodedropdown()", id = "state", placeholder = "State" })
-                                            *@
-                                             @Html.DropDownListFor(a => a.amcCode, Model.AMCCodeList, "Select a AMC Code", new { @class = "form-control required" })
+                                             @Html.DropDownListFor(a => a.amcCode, Model.AMCCodeList, "Select a AMC Code", new { @class = "form-control", required = "required"  })
                                        </div>
                                     </div>
                                 </div>
@@ -100,10 +118,8 @@
     
   $('#btnSave').click(function () {
         $("#btnSave").prop('disabled', true);
-
          // var x = $("#ClientAdd").serialize();
-         // alert('data: ' + JSON.stringify(x));
-          
+         // alert('data: ' + JSON.stringify(x));          
           $.ajax({
             url: '@Url.Action("InsertUpdateClient", "Client")',  
             type: 'POST',
@@ -114,41 +130,41 @@
                 // console.log(result);
                 // alert('message: ' + result.message);
                 // alert('status: ' + result.status);
-
+                //Swal.fire("Status", result.status, "info");
                 if (result.status == "save") {
-
                     if (result.message == "success") {
-                        swal("", "Record added successfully", "success")
-                        $("#btnSave").prop('disabled', false);
+                        $("#btnSave").prop('disabled', false);                       
                         $('#ClientAdd').each(function () {
                             this.reset();
-                        })
+                        })                      
+                        //Swal.fire({ title: "", text: "Record added successfully.", icon: "success"}); 
+                        Swal.fire("", "Record added successfully", "success");
                     }
                     else if (result.message == "exists") {
-                        swal("", "Client already exists.", "error")
+                        Swal.fire("", "Client already exists.", "error");
                         $("#btnSave").prop('disabled', false);
                     }
                     else {
-                        swal("", "Record added failed.", "error")
+                        Swal.fire("", "Record added failed.", "error");
                         $("#btnSave").prop('disabled', false);
                     }
                 } else if (result.status == "update") {
 
                     if (result.message == "success") {
-                        swal("", "Record updated successfully.", "success")
+                        Swal.fire("", "Record updated successfully.", "success");
                         $("#btnSave").prop('disabled', false);
                     }
                     else if (result.message == "notexists") {
-                        swal("", "Client not exists.", "error")
+                        Swal.fire("", "Client not exists.", "error");
                         $("#btnSave").prop('disabled', false);
                     }
                     else {
-                        swal("", "Record updated failed.", "error")
+                        Swal.fire("", "Record updated failed.", "error");
                         $("#btnSave").prop('disabled', false);
                     }
                 }
                 else {
-                    swal("", result.message, "error");
+                    Swal.fire("", result.message, "error");
                     $("#btnSave").prop('disabled', false);
                 }
             }

@@ -8,34 +8,36 @@ using StackRadius.Service.NSE;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Security.Authentication;
-using System.Text;
-public enum HttpVerb
-{
-    GET,
-    POST,
-    PUT,
-    DELETE
-}
 
 namespace StackRadius.Service
 {
     public class RestClient
     {
         public string EndPoint { get; set; }
-        public HttpVerb Method { get; set; }
+        public HttpMethod Method { get; set; }
         public string ContentType { get; set; }
         public string PostData { get; set; }
         public Dictionary<string, string> Headers { get; set; }
         //public const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
         //public const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
 
+        // Rule: Reuse your HttpClient instance across the application to prevent socket exhaustion
+        //ServicePointManager.DefaultConnectionLimit = 1;
+        private static readonly HttpClient httpClient = new HttpClient(new HttpClientHandler
+        {
+            MaxConnectionsPerServer = 1,
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+        });
+
         public RestClient()
         {
             EndPoint = "";
-            Method = HttpVerb.GET;
+            Method = HttpMethod.Get;
             ContentType = "text/xml";
             PostData = "";
             Headers = new Dictionary<string, string>();
@@ -44,13 +46,12 @@ namespace StackRadius.Service
         public RestClient(string endpoint)
         {
             EndPoint = endpoint;
-            Method = HttpVerb.GET;
+            Method = HttpMethod.Get;
             ContentType = "text/xml";
             PostData = "";
             Headers = new Dictionary<string, string>();
         }
-
-        public RestClient(string endpoint, HttpVerb method)
+        public RestClient(string endpoint, HttpMethod method)
         {
             EndPoint = endpoint;
             Method = method;
@@ -59,7 +60,7 @@ namespace StackRadius.Service
             Headers = new Dictionary<string, string>();
         }
 
-        public RestClient(string endpoint, HttpVerb method, string contentType)
+        public RestClient(string endpoint, HttpMethod method, string contentType)
         {
             EndPoint = endpoint;
             Method = method;
@@ -68,7 +69,7 @@ namespace StackRadius.Service
             Headers = new Dictionary<string, string>();
         }
 
-        public RestClient(string endpoint, HttpVerb method, string contentType, string postData)
+        public RestClient(string endpoint, HttpMethod method, string contentType, string postData)
         {
             EndPoint = endpoint;
             Method = method;
@@ -97,20 +98,17 @@ namespace StackRadius.Service
             try
             {
                 ServicePointManager.Expect100Continue = false;
-                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | Tls12 ;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
-                var request = (HttpWebRequest)WebRequest.Create(EndPoint + parameters);
 
-                request.KeepAlive = true;
-                request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                request.Accept = "*/*";
-                request.ProtocolVersion = HttpVersion.Version10;
-                request.ServicePoint.ConnectionLimit = 1;
-                request.Method = Method.ToString();
-                request.ContentLength = 0;
-                request.ContentType = ContentType;
+                // 1. Create the request message
+                var request = new HttpRequestMessage(Method, EndPoint + parameters);
 
-                // Add header that is sent with constructor to the web request...
+                request.Headers.ConnectionClose = false;
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
+                request.Version = new Version(1, 0);        // Set the HTTP version to 1.0
+                request.Headers.Add("ContentLength", "0");
+
+                // Add header that is sent with constructor to the request...
                 if (Headers != null && Headers.Count > 0)
                 {
                     foreach (KeyValuePair<string, string> headerItem in Headers)
@@ -119,7 +117,7 @@ namespace StackRadius.Service
                     }
                 }
 
-                // Add header sent as MakeRequest() parameter to the Web request...
+                // Add header sent as MakeRequest() parameter to the request...
                 if (headers != null && headers.Count > 0)
                 {
                     foreach (KeyValuePair<string, string> headerItem in headers)
@@ -128,42 +126,21 @@ namespace StackRadius.Service
                     }
                 }
 
-                if (!string.IsNullOrEmpty(PostData) && Method == HttpVerb.POST)
+                if (!string.IsNullOrEmpty(PostData) && Method == HttpMethod.Post)
                 {
-                    Logger.LogDebug("PostData: " + PostData);
-                    var encoding = new UTF8Encoding();
-                    var bytes = Encoding.GetEncoding("iso-8859-1").GetBytes(PostData);
-                    request.ContentLength = bytes.Length;
-                    using (var writeStream = request.GetRequestStream())
-                    {
-                        writeStream.Write(bytes, 0, bytes.Length);
-                    }
+                    var content = new StringContent(PostData);
+                    request.Content = content;
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(ContentType);
                 }
 
                 try
                 {
                     Logger.LogDebug("Make Request: " + request.Method + " " + EndPoint + parameters);
 
-                    var response = (HttpWebResponse)request.GetResponse();
-                    statusCode = (int)response.StatusCode;
-                    Logger.LogDebug(String.Format("MakeRequest(). Received HTTP {0}", (int)response.StatusCode));
+                    var response = httpClient.Send(request);
 
-                    //// Normal handling for 200 OK responses
-                    //if (response.StatusCode != HttpStatusCode.OK)
-                    //{
-                    //    statusCode = (int)response.StatusCode;
-                    //    var message = String.Format("Request failed. Received HTTP {0}", (int)response.StatusCode);
-                    //    Logger.LogDebug(string.Concat("Error in MakeRequest(). Error: ", message));
-                    //    throw new ApplicationException(message);
-                    //}
-                    //else
-                    //{
-                    //    statusCode = (int)response.StatusCode;
-                    //    Logger.LogDebug(String.Format("MakeRequest(). Received HTTP {0}", (int)response.StatusCode));
-                    //}
-
-                    // grab the response
-                    using (var responseStream = response.GetResponseStream())
+                    statusCode = (response?.StatusCode == null) ? 0 : (int)response?.StatusCode;
+                    using (var responseStream = response.Content.ReadAsStream())
                     {
                         if (responseStream != null)
                         {
@@ -174,68 +151,76 @@ namespace StackRadius.Service
                         }
                     }
 
-                    string contentType = response.ContentType;
-                    string fileName = "";
-
-                    Logger.LogDebug(String.Format("MakeRequest(). Content Type: {0}", contentType));
-
-                    // Check if the type points to something other than HTML/Text
-                    if (!contentType.StartsWith("text/html") && 
-                        !contentType.StartsWith("application/json"))
+                    var message = "";
+                    if (statusCode == 0) // null response or no status code, likely a network error
                     {
-                        // Try extracting from Content-Disposition
-                        string dispositionHeader = response.Headers["Content-Disposition"];
-                        Logger.LogDebug(String.Format("MakeRequest(). Content Disposition: {0}", dispositionHeader));
-                        if (!string.IsNullOrEmpty(dispositionHeader))
+                        // This happens if the request never reached the server (e.g., DNS error)
+                        message = String.Format("Request failed. Network level error.");
+                        Logger.LogDebug(string.Concat("Error in MakeRequest(). Error: ", message));
+                    }
+                    else if (statusCode == (int)System.Net.HttpStatusCode.NotFound)
+                    {
+                        message = String.Format("Request failed. Received HTTP {0}.", statusCode);
+                        Logger.LogDebug(string.Concat("Error in MakeRequest(). Error: ", message));
+                        retval.Result = string.Empty;
+                        retval.HasError = true;
+                        retval.Message = responseValue;
+                        retval.StatusCode = statusCode;
+                    }
+                    else if (statusCode == (int)System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        message = String.Format("Request failed. Received HTTP {0}.", statusCode);
+                        Logger.LogDebug(string.Concat("Error in MakeRequest(). Error: ", message));
+                        retval.Result = string.Empty;
+                        retval.HasError = true;
+                        retval.Message = responseValue;
+                        retval.StatusCode = statusCode;
+                    }
+                    else  // response is OK (200) or other success code
+                    {
+                        string fileName = "";
+                        string contentType = response.Content.Headers.ContentType?.ToString();
+                        if (contentType != null)
                         {
-                            try
+                            Logger.LogDebug(String.Format("MakeRequest(). Content Type: {0}", contentType));
+                            // Check if the type points to something other than HTML/Text
+                            if (!contentType.StartsWith("text/html") && !contentType.StartsWith("application/json"))
                             {
-                                ContentDisposition cd = new ContentDisposition(dispositionHeader);
-                                fileName = cd.FileName;
-                            }
-                            catch
-                            {
-                                // Fallback manual parse if ContentDisposition parsing fails
-                                int index = dispositionHeader.IndexOf("filename=");
-                                if (index >= 0)
+                                // Try extracting from Content-Disposition
+                                string dispositionHeader = response.Content.Headers.GetValues("Content-Disposition").FirstOrDefault();
+                                Logger.LogDebug(String.Format("MakeRequest(). Content Disposition: {0}", dispositionHeader));
+                                if (!string.IsNullOrEmpty(dispositionHeader))
                                 {
-                                    fileName = dispositionHeader.Substring(index + 9).Replace("\"", "").Trim();
+                                    try
+                                    {
+                                        ContentDisposition cd = new ContentDisposition(dispositionHeader);
+                                        fileName = cd.FileName;
+                                    }
+                                    catch
+                                    {
+                                        // Fallback manual parse if ContentDisposition parsing fails
+                                        int index = dispositionHeader.IndexOf("filename=");
+                                        if (index >= 0)
+                                        {
+                                            fileName = dispositionHeader.Substring(index + 9).Replace("\"", "").Trim();
+                                        }
+                                    }
                                 }
                             }
                         }
-
-                        // 3. Fallback to the final URL path if header is empty
-                        if (string.IsNullOrEmpty(fileName))
-                        {
-                            fileName = Path.GetFileName(response.ResponseUri.LocalPath);
-                        }
+                        retval.Result = responseValue;
+                        retval.HasError = false;
+                        retval.Message = string.Empty;
+                        retval.StatusCode = statusCode;
+                        retval.FileName = fileName;
                     }
-
-                    retval.Result = responseValue;
-                    retval.HasError = false;
-                    retval.Message = string.Empty;
-                    retval.StatusCode = statusCode;
-                    retval.FileName = fileName;
                 }
-                catch (WebException ex)
+                catch (HttpRequestException ex)
                 {
-                    // Verify that a response object actually exists
-                    if (ex.Response is HttpWebResponse errorResponse)
-                    {
-                        statusCode = (int)errorResponse.StatusCode;
-                        var message = String.Format("Request failed. Received HTTP {0}", (int)errorResponse.StatusCode);// 400
-                        Logger.LogDebug(string.Concat("Error in MakeRequest(). Error: ", message));
-
-                        // Extract the error stream from the exception response object
-                        var stream = errorResponse.GetResponseStream();
-                        if (stream != null)
-                        {
-                            var reader = new StreamReader(stream);
-                            string errorResponseBody = reader.ReadToEnd();
-                            Logger.LogDebug($"Error Details: {errorResponseBody}");
-                            responseValue = errorResponseBody;
-                        }
-                    }
+                    statusCode = (int)ex.StatusCode;
+                    var message = String.Format("Request failed. Received HTTP {0}.", statusCode);
+                    Logger.LogDebug(string.Concat("Error in MakeRequest(). Error: ", message));
+                    responseValue = ex.InnerException?.Message ?? string.Empty;
                     retval.Result = string.Empty;
                     retval.HasError = true;
                     retval.Message = responseValue;
@@ -255,11 +240,11 @@ namespace StackRadius.Service
                 retval.StatusCode = 0;
             }
 
-            Logger.LogDebug("Return StatusCode : " + (int) retval.StatusCode);
-            Logger.LogDebug("Return Result     : " + retval.Result);
-            Logger.LogDebug("Return Message    : " + retval.Message);
-            Logger.LogDebug("--------------------------------------------------------------");
-
+            Logger.LogDebug("Return Status Code    : " + (int)retval.StatusCode);
+            Logger.LogDebug("Return Result Length  : " + retval.Result.Length);
+            if (retval.Result.Length <= 500)
+                Logger.LogDebug("Return Result     : " + retval.Result);
+            Logger.LogDebug("Return Message        : " + retval.Message);
             return retval;
         }
 

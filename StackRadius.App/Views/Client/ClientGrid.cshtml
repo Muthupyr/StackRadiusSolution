@@ -1,0 +1,90 @@
+﻿
+@model StackRadius.Entity.ClientModel
+@{
+}
+<form id="PartialClientSelect">
+    <div class="table-responsive">
+
+        <table id="tblClient" class="table table-bordered table-striped table-hover dataTable js-exportable" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Client Id</th>
+                    <th>Client Name</th>
+                    <th>PAN No</th>
+                    <th>Amc Code</th>      
+                    <th>Mobile No</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                   <th>Client Id</th>
+                    <th>Client Name</th>
+                    <th>PAN No</th>
+                     <th>Amc Code</th>                    
+                    <th>Mobile No</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <script type="text/javascript">
+        var tblClient;
+        $(function () {
+            form = $("#ClientScreen").serialize()
+           
+            tblClient = $("#tblClient").DataTable({
+
+                processing: true,
+                serverSide: true,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                ajax: {
+                    url: "../Client/GetClientList?" + form,
+                    type: "POST",
+                    datatype: "json",
+                },
+                language: {
+                    infoEmpty: "",
+                    emptyTable: "No Record found.",
+                },
+                searching: false,
+                "order": [[0, "desc"]],  // clientId // order - index is as in ColumnHeader Tuple
+                columns: [
+                    { data: "clientId"},
+                    { data: "clientName" },
+                    { data: "panNo" },
+                    { data: "amcCode", },
+                    { data: "mobileNo", "orderable": false},
+                    { data: "invEmail", "orderable": false},
+                    {
+                        data: "", className: "Action grid-3 align-center", "orderable": false, render: function (data, type, row) {
+                            var Links = "";                            
+                            Links += "<a href='#' class='btnView' data-th='view' title='View' value='" + row.clientId + "'>View<i class='icon-view' aria-hidden='true' ></i></a>&nbsp;&nbsp;"
+                            Links += "<a href='#' class='btnEdit' data-th='edit' title='Edit' value='" + row.clientId + "'>Edit<i class='icon-edit' aria-hidden='true' ></i></a>&nbsp;&nbsp;";
+                            Links += "<a href='#' class='btnDelete' data-th='delete' title='Delete' value='" + row.clientId + "'>Delete<i class='icon-Delete' aria-hidden='true' ></i></a>";
+                            return Links;
+                        },
+                    },
+                ],
+
+                fnDrawCallback: function () {
+                    InitActions();
+                }
+            });
+           // GridExport({ columns: [0, 1, 2, 3, 4, 5], table: table = tblClient, title: "Client Details" });
+        })
+
+        function ReloadDatatable(data) {           
+            tblClient.ajax.url('../Client/GetClientList?' + data).load();
+        }
+
+       function InitActions() {
+          $("#btnAddNew").click(function () { Process({ controller: "Client", action: "Add" }); });
+          $(".btnEdit").click(function () { Process({ controller: "Client", action: "Edit", data: { Id: $(this).attr("value"), Mode: "Edit" } }) });
+          $(".btnView").click(function () { Process({ controller: "Client", action: "Edit", data: { Id: $(this).attr("value"), Mode: "View" } }) });
+          $('#tblClient').on('click', 'a.btnDelete', function (e) { GridDelete({ value: $(this).attr("value"), table: table = $('#tblClient').DataTable(), maintainvalue: this, url: "/Client/Delete" }); });
+        }
+    </script>  
+</form>

@@ -1,0 +1,168 @@
+﻿@model StackRadius.Entity.MasterDownloadModel
+@{
+    ViewBag.Title = "Master Download";
+}
+
+<title>@ViewBag.Title</title>
+
+<style>
+    .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+
+    .button1 {
+        border-radius: 2px;
+    }
+
+    .button2 {
+        border-radius: 4px;
+    }
+
+    .button3 {
+        border-radius: 8px;
+    }
+
+    .button4 {
+        border-radius: 12px;
+    }
+
+    .button5 {
+        border-radius: 50%;
+    }
+</style>
+<div>
+    <fieldset>
+        <div class="container">
+            <div class="header">
+                <h2>
+                    Master Download
+                </h2>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <button id="btnShowModal" type="button" class="btn btn-sm btn-default button">
+                        Download Master
+                    </button>
+                    <form id="frmMasterdownload" role="form" class="form-horizontal" method="post" action="javascript:;">
+                        <!-- Master Download Modal start -->
+                        <div id="masterdownloadModal" class="modal fade" tabindex="-1"
+                             data-keyboard="false" data-backdrop="static">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" style="color: Black; text-align: center;">Master Download</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+
+                                            <div class="row clearfix">
+                                                <div class="col-md-4">
+                                                    <b>File Type</b><span class="col-red">*</span>
+                                                    <div class="input-group m-b-0">
+                                                        <div class="form-line">
+                                                            @* <input class="form-control" type="text" placeholder="File type" id="FileType" />  *@
+                                                            @Html.DropDownListFor(a => a.FileType, Model.MasterFileTypeList, "Select a File Type", new { @class = "form-control", @required = "required" })
+
+                                                            @* @Html.TextBoxFor(a => a.client_code, new { @class = "form-control numericOnly required", id = "client_code", @maxlength = 8, placeholder = "Client code" }) *@
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" id="btnDownload" class="btn btn-primary button button4">Download</button>
+                                        <button type="button" id="btnHideModal" class="btn btn-primary button button4">Close</button>
+                                        @*                                  <!-- Text close button for the modal footer -->
+                                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+     *@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Master Download Modal end -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<footer>
+    <div>
+    </div>
+</footer>
+@*     
+<!-- The Bootstrap 5 JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modalElement = document.getElementById('masterdownloadModal');
+    const bootstrapModal = new bootstrap.Modal(modalElement); // Initialize
+    bootstrapModal.show(); // Open on startup
+  });
+</script>
+ *@
+  
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#btnShowModal").click(function() {
+            $("#masterdownloadModal").modal('show');
+        });
+
+        $("#btnHideModal").click(function() {
+            $("#masterdownloadModal").modal('hide');
+        });
+    });
+</script>
+
+<script>
+    $('#btnDownload').click(function() {
+        $("#btnDownload").prop('disabled', true);
+        // var x = $("#frmMasterdownload").serialize();
+        // alert('data: ' + JSON.stringify(x));
+
+        var fileType = $("#FileType").val();
+        if (fileType == "" || fileType == null) {
+            swal("", "Please select a File Type", "error");
+            $("#btnDownload").prop('disabled', false);
+            return false;
+        }
+
+        $.ajax({
+            url: '@Url.Action("DownloadFile", "MasterDownload")',
+            type: 'POST',
+            data: $("#frmMasterdownload").serialize(),
+
+            success: function(result) {
+                // alert('result: ' + JSON.stringify(result));
+                // console.log(result);
+                // alert('message: ' + result.message);
+                // alert('status: ' + result.status);
+
+                if (result.status == "Success") {
+                    swal("", result.message, "success");
+                    $("#btnDownload").prop('disabled', false);
+                    // reload the page with new records
+                    // window.location.reload();
+                }
+                else {
+                    swal("", result.message, "error");
+                    $("#btnDownload").prop('disabled', false);
+                }
+            }
+        })
+    });
+
+</script>

@@ -5,6 +5,7 @@
 	<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	<CheckEolTargetFramework>false</CheckEolTargetFramework>
 	<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+	<PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="App.config" />

@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql; // Make sure to install the Npgsql NuGet package
@@ -17,7 +19,6 @@ namespace StackRadius
             // Register factory first
             // Include this line as early as possible in your application lifecycle (e.g., at the start of Main or inside WebApplication.CreateBuilder)
             DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
-          
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -27,6 +28,7 @@ namespace StackRadius
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
                 //  The following added for log4net core.
                 //.ConfigureLogging(builder =>
                 //{

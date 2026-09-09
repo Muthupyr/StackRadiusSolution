@@ -1,0 +1,213 @@
+﻿@model IEnumerable<StackRadius.Entity.NSESIPMasterModel>
+@{
+   Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "NSE SIP Master";
+    ViewData["Title"] = "NSE SIP master";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "nsesip";
+    ViewData["FooterRight"] = "NSE MFSS SIP catalogue — refreshed daily from NSE";
+}
+
+<style>
+.button-group {
+    display: flex;       /* Forces items into a row */
+    gap: 8px;            /* Adds nice spacing between buttons */
+    align-items: center; /* Aligns them perfectly vertically */
+}
+</style>
+
+<title>@ViewBag.Title</title>
+
+@*
+    Pages/Nse/NseSIP.cshtml
+    URL: http://localhost:5220/nse/NSESIP
+
+    Reference DATA GRID page. Shows the shape a "list of records" screen
+    takes — CommandBar + full-height sortable table with pill-styled cells.
+    A dev cloning this pattern for a new entity (Sip, Mandate, Portfolio, …)
+    should copy this file + the code-behind, adjust SchemeRow → their entity,
+    and change the <table> columns.
+*@
+
+<form id="frmNSESIP" role="form" class="form-horizontal" method="post" action="javascript:;">
+    <input type="hidden" id="FileType" name="FileType"  value="SIP">
+    
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div> Loading...
+    </div>
+
+    <!-- CommandBar -->
+    <div class="commandbar">
+        <div class="commandbar-entity">
+            <svg class="icon"><use href="#i-book" /></svg>
+            Scheme [Total Record Count here]
+            @*  <span class="count">@Model.Schemes.Count</span> *@
+        </div>
+
+        <button type="button"  class="commandbar-btn">            
+            <svg class="icon"><use href="#i-plus" /></svg>
+            Add
+        </button>
+        <button type="button" id="btnDownload" class="commandbar-btn">
+            <svg class="icon"><use href="#i-refresh" /></svg>
+            Refresh from NSE
+        </button>
+        <div class="commandbar-divider"></div>
+        <button type="button" class="commandbar-btn">
+            <svg class="icon"><use href="#i-filter" /></svg>
+            Filters
+        </button>
+        <div class="commandbar-right">
+            <button type="button" class="commandbar-btn">
+                <svg class="icon"><use href="#i-download" /></svg>
+                Export CSV
+            </button>
+            @*  <div class="commandbar-count">@Model.TotalRecords </div> *@
+        </div>
+    </div>
+
+    <div class="grid-wrap">
+        <table id="tblNSESIP" class="grid-table">
+            <thead>
+                <tr>
+                    <th style="width:5%;">                   
+                         <input type="checkbox" id="chkbox" class="allchk" disabled="disabled" >
+                     </th>
+                    <th>Scheme Code</th>                    
+                    <th>Scheme Name</th>
+                    <th>SIP Frequency</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var s in Model)
+                    {
+                        <tr>
+                            <td style="width:5%;">
+                                @if (@s.scheme_code != "1")
+                                {
+                                    <input type="checkbox" id="chkbox" class="singlrchk" disabled="disabled"  >
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="chkbox" class="singlrchk" disabled >
+                                }
+                            </td>
+                            <td>@s.scheme_code</td>
+                            <td>@s.scheme_name</td>
+                            <td>@s.sip_frequency</td>
+
+                            @*
+                        <td>@s.amc_code</td>
+                        <td>@s.amc_name</td>
+                        <td>@s.scheme_code</td>
+                        <td>@s.scheme_name</td>
+                        <td>@s.sip_transaction_mode</td>
+                        <td>@s.sip_frequency</td>
+                        <td>@s.sip_dates</td>
+                        <td>@s.sip_minimum_gap</td>
+                        <td>@s.sip_maximum_gap</td>
+                        <td>@s.sip_installment_gap</td>
+                        <td>@s.sip_status</td>
+                        <td>@s.sip_minimum_installment_amount</td>
+                        <td>@s.sip_maximum_installment_amount</td>
+                        <td>@s.sip_multiplier_amount</td>
+                        <td>@s.sip_minimum_installment_numbers</td>
+                        <td>@s.sip_maximum_installment_numbers</td>
+                        <td>@s.scheme_isin</td>
+                        <td>@s.scheme_type</td>
+                        <td>@s.pause_flag</td>
+                        <td>@s.pause_minimum_installments</td>
+                        <td>@s.pause_maximum_installments</td>
+                        <td>@s.pause_modification_count</td>
+                        <td>@s.filler_1</td>
+                        <td>@s.filler_2</td>
+                        <td>@s.filler_3</td>
+                        <td>@s.filler_4</td>
+                        <td>@s.filler_5</td>
+
+*@
+                            <td>
+                               <div class="button-group">
+                                    <button type="button" id="btnView" value="@s.scheme_code" title="View"> <svg class="icon"><use href="#i-eye" /></svg> </button>
+                                    <button type="button" id="btnEdit" value="@s.scheme_code" title="Edit"> <svg class="icon"><use href="#i-edit" /></svg> </button>
+                                    <button type="button" id="btnDelete" value="@s.scheme_code" title="Delete"> <svg class="icon"><use href="#i-trash" /></svg> </button>
+                               </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
+
+<script>
+    $('#btnDownload').click(function() {
+ 
+        const spinner = document.getElementById('loading-spinner');
+
+         // 1. Show the spinner before starting the request
+         spinner.style.display = 'block';
+
+        $("#btnDownload").prop('disabled', true);
+         var x = $("#frmNSESIP").serialize();
+         //alert('data: ' + JSON.stringify(x));
+
+        var fileType = $("#FileType").val(); // "SIP"
+        //swal("", "Selected file type : " + fileType + ".", "success");
+        if (fileType == "" || fileType == null) {  
+            swal("", "Please select a File Type. FileType :" + fileType + ".", "error");
+            $("#btnDownload").prop('disabled', false);
+            return false;
+        }
+
+        $.ajax({
+            url: '@Url.Action("DownloadFile", "MasterDownload")',
+            type: 'POST',
+            data: $("#frmNSESIP").serialize(),
+
+            success: function(result) {
+                // alert('result: ' + JSON.stringify(result));
+                // console.log(result);
+                // alert('message: ' + result.message);
+                // alert('status: ' + result.status);
+
+                if (result.status == "Success") {
+                    //swal("", result.message, "success");
+
+                    swal({
+                        title: "",
+                        text: result.message,
+                        type: "success",
+                        closeOnConfirm: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "success"
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            // reload with the new data
+                            window.location.href = '@Url.Action("Index", "NSESIP")'
+                        }
+                    });
+
+                    $("#btnDownload").prop('disabled', false);
+  
+                }
+                else {
+                    swal("", result.message, "error");
+                    $("#btnDownload").prop('disabled', false);
+                }
+                spinner.style.display = 'none';
+            },
+            error: function(xhr, status, error) {
+                swal("", "Error occurred while downloading file : " + error, "error");
+                $("#btnDownload").prop('disabled', false);
+                spinner.style.display = 'none';
+            }
+        });
+    });
+
+</script>

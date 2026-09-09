@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StackRadius.Service;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace StackRadius.Service.NSE
 { 
@@ -16,7 +17,7 @@ namespace StackRadius.Service.NSE
             string endPoint = string.Concat(para.baseUrl, Constants.NSEAPIUrls.MFAOrderwise);
             string jsonString = JsonConvert.SerializeObject(request);
             string postData = jsonString;
-            var client = new RestClient(endPoint, HttpVerb.POST, "application/json", postData);
+            var client = new RestClient(endPoint, HttpMethod.Post, "application/json", postData);
 
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers = Common.GetBasicAuthorizationHeader(para.userId, para.encPassword);

@@ -1,938 +1,536 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * AsthraUiUx.RazorPages — site.css
+ *
+ * Standalone stylesheet — zero external dependencies (no Tailwind, no
+ * Bootstrap, no Fontawesome). Ports the visual system of the React
+ * prototype's PortalShell + Master dashboard into hand-written CSS.
+ *
+ * ORGANISATION (top to bottom):
+ *   1. Reset + design tokens (colours, spacing, radii, shadows)
+ *   2. Typography
+ *   3. Layout primitives  (.stack .row .grid)
+ *   4. Shell chrome       (.session-band, .global-nav, .side-map, .breadcrumb, .footer)
+ *   5. Command bar        (.commandbar, .commandbar-btn, .commandbar-entity)
+ *   6. Content primitives (.stat-tile, .info-panel, .empty-state, .page-header)
+ *   7. Data grid          (.grid-table)
+ *   8. Icons (.icon)      inline SVG helper
+ *   9. Utility classes    (spacing, colour, flex, sizing — a *tiny* subset)
+ *
+ * COMMENT DISCIPLINE: every visual concept is labelled here — a dev reading
+ * "where does the top-nav come from?" can grep `.global-nav` and find both
+ * the class definition here and the markup in Pages/Shared/_GlobalNav.cshtml.
+ * ══════════════════════════════════════════════════════════════════════════ */
 
+/* ─── 1. Reset + design tokens ─────────────────────────────────────────── */
 
-/*
-* demo.css
-* File include item demo only specific css only
-******************************************************************************/
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
 
-.menu .app-brand.demo {
-    height: 64px;
-    margin-top: 12px;
+:root {
+    /* Colour palette — matches the Tailwind slate/emerald/indigo etc. shades used by the React app */
+    --c-white:        #ffffff;
+    --c-slate-50:     #f8fafc;
+    --c-slate-100:    #f1f5f9;
+    --c-slate-200:    #e2e8f0;
+    --c-slate-300:    #cbd5e1;
+    --c-slate-400:    #94a3b8;
+    --c-slate-500:    #64748b;
+    --c-slate-600:    #475569;
+    --c-slate-700:    #334155;
+    --c-slate-800:    #1e293b;
+    --c-slate-900:    #0f172a;
+
+    --c-emerald-50:   #ecfdf5;
+    --c-emerald-100:  #d1fae5;
+    --c-emerald-600:  #059669;
+    --c-emerald-700:  #047857;
+    --c-emerald-800:  #065f46;
+
+    --c-indigo-50:    #eef2ff;
+    --c-indigo-100:   #e0e7ff;
+    --c-indigo-600:   #4f46e5;
+    --c-indigo-700:   #4338ca;
+
+    --c-blue-50:      #eff6ff;
+    --c-blue-100:     #dbeafe;
+    --c-blue-600:     #2563eb;
+    --c-blue-700:     #1d4ed8;
+
+    --c-amber-50:     #fffbeb;
+    --c-amber-100:    #fef3c7;
+    --c-amber-600:    #d97706;
+    --c-amber-700:    #b45309;
+    --c-amber-800:    #92400e;
+
+    --c-purple-50:    #faf5ff;
+    --c-purple-100:   #f3e8ff;
+    --c-purple-600:   #9333ea;
+    --c-purple-700:   #7e22ce;
+
+    --c-sky-50:       #f0f9ff;
+    --c-sky-100:      #e0f2fe;
+    --c-sky-600:      #0284c7;
+
+    --c-red-100:      #fee2e2;
+    --c-red-600:      #dc2626;
+    --c-red-800:      #991b1b;
+
+    /* Spacing scale (4px base) */
+    --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+    --s-5: 20px;  --s-6: 24px;  --s-8: 32px;  --s-10: 40px;
+    --s-12: 48px; --s-16: 64px; --s-20: 80px; --s-24: 96px;
+
+    /* Radii */
+    --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-2xl: 16px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow:    0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+    /* Layout constants */
+    --nav-h:       48px;
+    --sidebar-w:   256px;
+    --sidebar-w-collapsed: 56px;
+
+    /* Font stack */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
 }
 
-.app-brand-logo.demo svg {
-    width: 22px;
-    height: 38px;
+/* ─── 2. Typography ─────────────────────────────────────────────────────── */
+
+body {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--c-slate-900);
+    background: var(--c-slate-50);
+    -webkit-font-smoothing: antialiased;
 }
 
-.app-brand-text.demo {
-    font-size: 1.75rem;
-    letter-spacing: -0.5px;
-}
+h1, h2, h3, h4 { margin: 0; font-weight: 600; }
+h1 { font-size: 20px; line-height: 1.3; }
+h2 { font-size: 16px; line-height: 1.4; }
+h3 { font-size: 13px; line-height: 1.4; text-transform: uppercase; letter-spacing: 0.05em; color: var(--c-slate-700); }
 
-/* ! For .layout-navbar-fixed added fix padding top to .layout-page */
-/* Detached navbar */
-.layout-navbar-fixed .layout-wrapper:not(.layout-horizontal):not(.layout-without-menu) .layout-page {
-    padding-top: 74px !important;
-}
-/* Default navbar */
-.layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page {
-    padding-top: 64px !important;
-}
+p  { margin: 0; }
+a  { color: var(--c-indigo-600); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-.docs-page .layout-navbar-fixed.layout-wrapper:not(.layout-without-menu) .layout-page,
-.docs-page .layout-menu-fixed.layout-wrapper:not(.layout-without-menu) .layout-page {
-    padding-top: 62px !important;
-}
+.text-mono { font-family: var(--font-mono); font-size: 12px; }
+.text-xs   { font-size: 11px; }
+.text-sm   { font-size: 13px; }
+.text-md   { font-size: 14px; }
 
-/* Navbar page z-index issue solution */
-.content-wrapper .navbar {
-    z-index: auto;
-}
+/* ─── 3. Layout primitives ──────────────────────────────────────────────── */
 
-/*
-* Content
-******************************************************************************/
-
-.demo-blocks > * {
-    display: block !important;
-}
-
-.demo-inline-spacing > * {
-    margin: 1rem 0.375rem 0 0 !important;
-}
-
-/* ? .demo-vertical-spacing class is used to have vertical margins between elements. To remove margin-top from the first-child, use .demo-only-element class with .demo-vertical-spacing class. For example, we have used this class in forms-input-groups.html file. */
-.demo-vertical-spacing > * {
-    margin-top: 1rem !important;
-    margin-bottom: 0 !important;
-}
-
-.demo-vertical-spacing.demo-only-element > :first-child {
-    margin-top: 0 !important;
-}
-
-.demo-vertical-spacing-lg > * {
-    margin-top: 1.875rem !important;
-    margin-bottom: 0 !important;
-}
-
-.demo-vertical-spacing-lg.demo-only-element > :first-child {
-    margin-top: 0 !important;
-}
-
-.demo-vertical-spacing-xl > * {
-    margin-top: 5rem !important;
-    margin-bottom: 0 !important;
-}
-
-.demo-vertical-spacing-xl.demo-only-element > :first-child {
-    margin-top: 0 !important;
-}
-
-.rtl-only {
-    display: none !important;
-    text-align: left !important;
-    direction: ltr !important;
-}
-
-[dir='rtl'] .rtl-only {
-    display: block !important;
-}
-
-/* Dropdown buttons going out of small screens */
-@media (max-width: 576px) {
-    #dropdown-variation-demo .btn-group .text-truncate {
-        width: 231px;
-        position: relative;
-    }
-
-        #dropdown-variation-demo .btn-group .text-truncate::after {
-            position: absolute;
-            top: 45%;
-            right: 0.65rem;
-        }
-}
-
-/*
-* Layout demo
-******************************************************************************/
-
-.layout-demo-wrapper {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    margin-top: 1rem;
-}
-
-.layout-demo-placeholder img {
-    width: 900px;
-}
-
-.layout-demo-info {
-    text-align: center;
-    margin-top: 1rem;
-}
-
-
-
-
-/*
-* Custom
-******************************************************************************/
-
-
-/* App Launcher Styling */
-.layout-wrapper {
-    position: relative;
-}
-
-.layout-menu-fixed .layout-menu-toggle {
-    z-index: 99998;
-}
-
-/* App Launcher Wrapper */
-.app-launcher-wrapper {
-    position: relative !important;
-    z-index: 999999 !important;
-}
-
-/* App Brand */
-.app-brand {
-    position: relative !important;
-    z-index: 999999 !important;
-}
-
-/* Layout Menu */
-.layout-menu {
-    position: relative;
-    z-index: 1;
-}
-
-/* App Launcher Icon */
-/* App Launcher Icon */
-/* App Launcher Icon */
-.app-launcher-icon {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 50px !important; /* Adjusted to 50px */
-    height: 50px !important; /* Adjusted to 50px */
-    background-color: transparent !important;
-    transition: background-color 0.3s ease !important;
-    cursor: pointer !important;
-    border: none !important;
-    border-radius: 0.375rem !important;
-    position: relative !important;
-    z-index: 999999 !important;
-}
-
-    .app-launcher-icon:hover {
-        background-color: rgba(67, 89, 113, 0.1) !important;
-    }
-
-    .app-launcher-icon i {
-        font-size: 2rem !important; /* Adjusted for 50px container */
-        color: black !important; /* Changed to black */
-        transition: color 0.3s ease !important;
-    }
-
-    .app-launcher-icon:hover i {
-        color: var(--bs-primary) !important;
-    }
-
-/* App Launcher Dropdown - keeping original size */
-.app-launcher {
-    width: 220px !important; /* Kept original size */
-    padding: 0.75rem !important; /* Kept original size */
-    position: fixed !important;
-    top: auto !important;
-    right: auto !important;
-    left: auto !important;
-    z-index: 2147483647 !important;
-    background-color: var(--bs-body-bg, white) !important;
-    border: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.15)) !important;
-    border-radius: 0.375rem !important;
-    box-shadow: 0 0.25rem 1rem rgba(161, 172, 184, 0.45) !important;
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    transform: none !important;
-    transition: visibility 0.2s, opacity 0.2s !important;
-}
-    /* Add this to your CSS */
-    .app-launcher.show {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important; /* Added to ensure no margin is pushing it right */
-        overflow: visible !important;
-    }
-
-/* Force parent containers to show overflow */
-.app-launcher-wrapper {
-    overflow: visible !important;
-}
-
-.app-brand {
-    overflow: visible !important;
-}
-
-.layout-menu {
-    overflow: visible !important;
-}
-
-/* App Grid */
-.app-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.5rem !important;
-}
-
-/* App Item */
-.app-item {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    padding: 0.75rem !important;
-    border-radius: 0.375rem !important;
-    color: var(--bs-body-color) !important;
-    text-decoration: none !important;
-    text-align: center !important;
-    transition: background-color 0.2s, color 0.2s !important;
-}
-
-    .app-item:hover {
-        background-color: rgba(67, 89, 113, 0.04) !important;
-        color: var(--bs-primary) !important;
-    }
-
-    .app-item i {
-        margin-bottom: 0.5rem !important;
-    }
-
-    .app-item span {
-        font-size: 0.8125rem !important;
-    }
-
-/* Dropdown Elements */
-.dropdown-header {
-    font-weight: 600 !important;
-    padding: 0 0.5rem 0.5rem !important;
-    margin-bottom: 0.5rem !important;
-    color: var(--bs-body-color) !important;
-}
-
-.dropdown-divider {
-    margin: 0.5rem 0 !important;
-    border-top: 1px solid var(--bs-border-color) !important;
-}
-
-.dropdown-item {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.5rem !important;
-    color: var(--bs-body-color) !important;
-    text-decoration: none !important;
-    transition: background-color 0.2s, color 0.2s !important;
-}
-
-    .dropdown-item:hover {
-        background-color: rgba(67, 89, 113, 0.04) !important;
-        color: var(--bs-primary) !important;
-    }
-
-    .dropdown-item i {
-        margin-right: 0.5rem !important;
-    }
-
-
-
-.area-switcher-icon {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 1.2rem; /* Changed to just 1.5px for a slight right shift */
-    width: 240px;
-    height: 40px;
-    background-color: transparent;
-    border: 1px solid var(--bs-primary);
-    border-radius: 0.25rem;
-    color: var(--bs-primary);
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    font-size: 0.875rem;
-}
-
-    .area-switcher-icon:hover {
-        background-color: var(--bs-primary);
-        color: #fff;
-    }
-
-    .area-switcher-icon i {
-        font-size: 1.25rem;
-        margin-right: 0.5rem;
-        transition: color 0.2s ease;
-    }
-
-    .area-switcher-icon:hover i {
-        color: #fff;
-    }
-/* Area Switcher Dropdown - keep as is */
-.area-switcher {
-    min-width: 260px;
-    padding: 1rem;
-    position: center;
-    top: calc(100% + 0.5rem);
-    right: 0;
-    z-index: 1090;
-    background-color: var(--bs-body-bg);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.375rem;
-    box-shadow: 0 0.25rem 1rem rgba(161, 172, 184, 0.45);
-}
-
-/* Area Grid - keep as is */
-.area-grid {
+.app-shell {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-}
-
-/* Area Item - keep as is */
-.area-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    color: var(--bs-body-color);
-    text-decoration: none;
-    text-align: center;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-    .area-item:hover {
-        background-color: rgba(67, 89, 113, 0.04);
-        color: var(--bs-primary);
-    }
-
-    .area-item i {
-        margin-bottom: 0.5rem;
-    }
-
-    .area-item span {
-        font-size: 0.8125rem;
-    }
-
-/* Menu Inner - keep as is */
-.menu-inner {
-    position: static;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-}
-
-/* Area Switcher Wrapper - keep as is */
-.area-switcher-wrapper {
-    margin-top: auto;
-    position: sticky;
-    bottom: 0;
-    z-index: 1000;
-    padding: 1rem;
-    background-color: var(--bs-body-bg);
-    border-top: 1px solid var(--bs-border-color);
-    display: flex; /* Add this */
-    height: 60px;
-    justify-content: center; /* Add this */
-    align-items: center; /* Add this */
-}
-/* App Switch Wrapper */
-.app-switch-wrapper {
-    position: relative;
-    margin-right: 1rem;
-}
-
-/* App Switch Icon */
-.app-switch-icon {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    background-color: transparent;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-    border: none;
-    border-radius: 0.375rem;
-    margin-left: 16px;
-}
-
-    .app-switch-icon:hover {
-        background-color: rgba(67, 89, 113, 0.1);
-    }
-
-    .app-switch-icon i {
-        font-size: 1.25rem;
-        color: var(--bs-body-color);
-        transition: color 0.3s ease;
-        margin-right: 0.5rem;
-    }
-
-    .app-switch-icon:hover i {
-        color: var(--bs-primary);
-    }
-
-/* Switch Label */
-.switch-label {
-    font-size: 0.9375rem;
-    color: var(--bs-body-color);
-    transition: color 0.3s ease;
-}
-
-.app-switch-icon:hover .switch-label {
-    color: var(--bs-primary);
-}
-
-/* App Switch Dropdown */
-.app-switch {
-    min-width: 280px;
-    padding: 1rem;
-    margin: 0;
-    position: absolute;
-    top: 100% !important;
-    left: 0 !important;
-    transform: none !important;
-    z-index: 1092;
-    background-color: var(--bs-body-bg);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.375rem;
-    box-shadow: 0 0.25rem 1rem rgba(161, 172, 184, 0.45);
-}
-
-/* App Switch List Items */
-.app-switch-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-    .app-switch-list .dropdown-item {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        color: var(--bs-body-color);
-        transition: background-color 0.2s, color 0.2s;
-    }
-
-        .app-switch-list .dropdown-item:hover {
-            background-color: rgba(67, 89, 113, 0.04);
-            color: var(--bs-primary);
-        }
-
-        .app-switch-list .dropdown-item i {
-            margin-right: 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .app-switch-list .dropdown-item span {
-            font-size: 0.8125rem;
-        }
-
-/* Dropdown Header */
-.app-switch .dropdown-header {
-    font-weight: bold;
-    padding: 0 1rem 0.5rem;
-}
-
-/* Dropdown Divider */
-.app-switch .dropdown-divider {
-    margin: 0.5rem 0;
-}
-
-/* Last menu item styling */
-.app-switch .dropdown-item:last-child {
-    margin-top: 0.5rem;
-}
-
-
-vertical-divider {
-    height: 40px; /* Match your navbar height */
-    width: 1px;
-    background-color: var(--bs-border-color);
-    margin: 0 1rem; /* Adjust spacing on both sides */
-    opacity: 0.6; /* Make it slightly transparent */
-}
-
-
-
-
-
-
-
-
-
-
-.app-brand.demo {
-    position: relative;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-}
-
-    .app-brand.demo::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 1.25rem; /* adjust this value for padding */
-        right: 1.25rem; /* adjust this value for padding */
-        height: 1px;
-        background: var(--bs-border-color);
-    }
-
-
-
-
-
-/* Menu toggle styles */
-
-/* Add these to your ~/css/site.css file */
-
-/* Grid Responsive Styles */
-@media screen and (max-width: 1200px) {
-    .ag-theme-material {
-        height: calc(100vh - 180px) !important;
-    }
-
-    .ag-header-cell {
-        font-size: 0.875rem !important;
-    }
-}
-
-@media screen and (max-width: 992px) {
-    .ag-theme-material {
-        height: calc(100vh - 160px) !important;
-    }
-
-    .action-buttons {
-        gap: 0.25rem !important;
-    }
-
-    .btn-icon {
-        width: 28px !important;
-        height: 28px !important;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .ag-theme-material {
-        height: calc(100vh - 140px) !important;
-        min-height: 300px !important;
-    }
-
-    .ag-cell {
-        padding: 8px 5px !important;
-        font-size: 0.875rem !important;
-    }
-
-        /* Hide less important columns on mobile */
-        .ag-header-cell[col-id="email"],
-        .ag-cell[col-id="email"] {
-            display: none !important;
-        }
-
-    .side-menu {
-        width: 100% !important;
-        right: -100% !important;
-    }
-
-        .side-menu.open {
-            right: 0 !important;
-        }
-
-    .form-control,
-    .form-select {
-        font-size: 16px !important;
-        padding: 0.375rem 0.75rem !important;
-    }
-}
-
-@media screen and (max-width: 576px) {
-    .ag-theme-material {
-        height: calc(100vh - 120px) !important;
-        font-size: 0.8125rem !important;
-    }
-
-    .ag-header-cell[col-id="date"],
-    .ag-cell[col-id="date"] {
-        display: none !important;
-    }
-
-    .ag-cell {
-        padding: 6px 4px !important;
-    }
-
-    .btn-icon {
-        width: 24px !important;
-        height: 24px !important;
-        padding: 0.25rem !important;
-    }
-
-    .dropdown-menu {
-        min-width: 140px !important;
-        font-size: 0.875rem !important;
-    }
-}
-
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-    .btn-icon,
-    .dropdown-item {
-        padding: 0.75rem !important;
-    }
-
-    .dropdown-menu {
-        padding: 0.5rem 0 !important;
-    }
-
-    .dropdown-item {
-        min-height: 44px !important;
-    }
-}
-
-
-
-
-
-.command-bar {
-    /* Keep existing styles */
-    background: white;
-    border-radius: 0.375rem;
-    box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12);
-    padding: 0.25rem;
-    width: 100%;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-}
-
-.command-button {
-    /* Remove flex: 1 1 0 from base button style */
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.4375rem 0.75rem;
-    font-size: 0.9375rem;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease-in-out;
-    gap: 0.25rem;
-    background: transparent;
-    border: none;
-    color: #333;
-    white-space: nowrap;
-    cursor: pointer;
-    min-width: 0;
-}
-
-/* Add new style for buttons inside command-group only */
-.command-group .command-button {
-    flex: 1 1 0; /* Apply flex grow only to buttons inside command-group */
-}
-
-/* Rest of your existing styles remain the same */
-.command-button span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.command-button:hover {
-    background: #f8f9fa;
-    color: #696cff;
-}
-
-.command-group {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    flex: 1;
-    width: calc(100% - 50px);
-}
-
-.command-view {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: white;
-    padding: 0.5rem;
-    transition: transform 0.3s ease;
-}
-
-.toggle-btn {
-    flex: 0 0 40px !important;
-    width: 40px;
-    padding: 0.4375rem;
-    margin-left: 0.5rem;
-}
-
-#altCommandBar {
-    transform: translateX(100%);
-}
-
-.hidden {
-    display: none !important;
-}
-
-
-
-
-/* Add these styles to your site.css or equivalent stylesheet */
-/* Add these styles to your site.css or equivalent stylesheet */
-/* Root variables */
-
-/* Restore the original submenu style */
-/* Add these styles to your site.css or equivalent stylesheet */
-/* CSS */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-/* Base Layout Styles */
-
-
-.layout-wrapper {
-    min-height: 100vh;
-}
-
-.layout-container {
-    display: flex;
-    width: 100%;
-    position: relative;
-}
-
-.layout-menu {
-    flex: 0 0 16%;
-    width: 16% !important;
-    max-width: 280px;
+    grid-template-rows: auto var(--nav-h) 1fr auto;
     height: 100vh;
+    overflow: hidden;
+}
+
+.app-body {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    overflow: hidden;
+}
+.app-body.sidebar-collapsed {
+    grid-template-columns: var(--sidebar-w-collapsed) 1fr;
+}
+
+.app-content {
     overflow-y: auto;
-    z-index: 1050000;
-    transition: left 0.3s ease-in-out;
+    background: var(--c-slate-50);
 }
 
-.menu-vertical {
-    width: 100% !important;
-    max-width: 260px;
+/* ─── 4. Shell chrome ───────────────────────────────────────────────────── */
+
+/* Session band — Signed-in-as banner above the top nav */
+.session-band {
+    display: flex; align-items: center; gap: var(--s-3);
+    height: 28px; padding: 0 var(--s-4);
+    background: linear-gradient(90deg, var(--c-emerald-50), var(--c-white));
+    border-bottom: 1px solid var(--c-emerald-100);
+    font-size: 11px; color: var(--c-emerald-800);
+}
+.session-band .session-pill {
+    padding: 1px 6px; border-radius: 4px;
+    background: var(--c-emerald-100);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    font-size: 10px;
+}
+.session-band .session-meta {
+    color: var(--c-slate-600); font-family: var(--font-mono); font-size: 10px;
+}
+.session-band .spacer { flex: 1; }
+
+/* Global nav — top strip with brand + solution pill + apps + search + user */
+.global-nav {
+    display: flex; align-items: center;
+    height: var(--nav-h); padding: 0 var(--s-4);
+    background: var(--c-white);
+    border-bottom: 1px solid var(--c-slate-200);
+    gap: var(--s-3);
+}
+.global-nav .brand-block {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding-right: var(--s-3); border-right: 1px solid var(--c-slate-200);
+}
+.global-nav .brand-badge {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 12px;
+}
+.global-nav .brand-badge.bg-indigo { background: var(--c-indigo-600); }
+.global-nav .brand-badge.bg-emerald { background: var(--c-emerald-600); }
+.global-nav .brand-badge.bg-amber   { background: var(--c-amber-600); }
+.global-nav .brand-badge.bg-slate   { background: var(--c-slate-700); }
+.global-nav .brand-text  { font-weight: 600; font-size: 14px; color: var(--c-slate-900); }
+.global-nav .solution-pill {
+    padding: 3px 8px; border-radius: 4px;
+    background: var(--c-slate-100); color: var(--c-slate-700);
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+}
+.global-nav .app-switcher, .global-nav .area-label {
+    display: flex; align-items: center; gap: var(--s-1);
+    padding: 4px 8px; border-radius: var(--r-md);
+    color: var(--c-slate-700); font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 0; background: transparent;
+}
+.global-nav .app-switcher:hover, .global-nav .area-label:hover { background: var(--c-slate-100); }
+.global-nav .waffle-btn {
+    width: 32px; height: 32px; border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 0; color: var(--c-slate-600); cursor: pointer;
+}
+.global-nav .waffle-btn:hover { background: var(--c-slate-100); color: var(--c-slate-900); }
+.global-nav .spacer { flex: 1; }
+.global-nav .search-box {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: 5px 10px; border-radius: var(--r-md);
+    background: var(--c-slate-100); color: var(--c-slate-500);
+    width: 320px; font-size: 13px;
+}
+.global-nav .search-box input {
+    flex: 1; border: 0; background: transparent; outline: 0;
+    color: var(--c-slate-900); font-size: 13px;
+}
+.global-nav .icon-btn {
+    width: 32px; height: 32px; border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 0; color: var(--c-slate-600); cursor: pointer;
+}
+.global-nav .icon-btn:hover { background: var(--c-slate-100); color: var(--c-slate-900); }
+.global-nav .user-badge {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 12px;
+    background: var(--c-indigo-600); cursor: pointer;
 }
 
-.layout-page {
-    flex: 1;
-    min-width: 0;
-    margin-left: 0;
-    padding-left: 0;
-    width: 84%;
-    transition: margin-left 0.3s ease, width 0.3s ease;
+/* Breadcrumb strip */
+.breadcrumb {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: 8px var(--s-6);
+    background: var(--c-white);
+    border-bottom: 1px solid var(--c-slate-200);
+    font-size: 12px; color: var(--c-slate-500);
 }
-
-/* Adjustments for larger screens */
-.layout-wrapper {
-    min-height: 100vh;
+.breadcrumb .crumb { color: var(--c-slate-500); }
+.breadcrumb .crumb.active { color: var(--c-slate-900); font-weight: 500; }
+.breadcrumb .sep { color: var(--c-slate-300); }
+.breadcrumb-copy {
+    margin-left: auto;
+    background: transparent; border: 0; color: var(--c-slate-400);
+    cursor: pointer; padding: 4px; border-radius: 4px;
 }
+.breadcrumb-copy:hover { color: var(--c-slate-700); background: var(--c-slate-100); }
 
-.layout-container {
-    display: flex;
-    width: 100%;
-    position: relative;
-}
-
-.layout-menu {
-    flex: 0 0 16%;
-    width: 16% !important;
-    max-width: 280px;
-    height: 100vh;
+/* Side map — left rail with Area accordion + SubArea list */
+.side-map {
+    background: var(--c-white);
+    border-right: 1px solid var(--c-slate-200);
     overflow-y: auto;
-    z-index: 1050;
-    transition: left 0.3s ease-in-out;
+    display: flex; flex-direction: column;
+}
+.side-map-header {
+    padding: 12px var(--s-4);
+    border-bottom: 1px solid var(--c-slate-200);
+    background: var(--c-white);
+}
+.side-map-header .label {
+    font-size: 10px; font-weight: 600; color: var(--c-slate-500);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+.side-map-header .value {
+    font-size: 13px; font-weight: 500; color: var(--c-slate-900);
+}
+.side-map-areas { flex: 1; padding: var(--s-2) 0; }
+.side-map-area {
+    padding: 0 var(--s-2); margin-bottom: 2px;
+}
+.side-map-area-header {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: 6px 8px; border-radius: var(--r-md);
+    background: transparent; border: 0; width: 100%;
+    color: var(--c-slate-700); font-size: 13px; font-weight: 500;
+    cursor: pointer; text-align: left;
+}
+.side-map-area-header:hover { background: var(--c-slate-100); }
+.side-map-area-header.active {
+    background: var(--c-indigo-50); color: var(--c-indigo-700);
+    font-weight: 600;
+}
+.side-map-area-header .chevron { margin-left: auto; transition: transform 0.15s; }
+.side-map-area-header.expanded .chevron { transform: rotate(90deg); }
+.side-map-area-groups { padding: 4px 0 4px 24px; }
+.side-map-group-label {
+    font-size: 10px; color: var(--c-slate-400);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 8px 8px 4px; font-weight: 600;
+}
+.side-map-subarea {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: 5px 8px; border-radius: var(--r-md);
+    color: var(--c-slate-600); font-size: 12px;
+    cursor: pointer;
+}
+.side-map-subarea:hover { background: var(--c-slate-100); color: var(--c-slate-900); }
+.side-map-subarea.active {
+    background: var(--c-indigo-50); color: var(--c-indigo-700);
+    font-weight: 600;
+}
+.side-map-subarea .phase-badge {
+    margin-left: auto;
+    font-size: 9px; font-weight: 600; text-transform: uppercase;
+    padding: 1px 5px; border-radius: 3px;
+    background: var(--c-slate-100); color: var(--c-slate-600);
+}
+.side-map-subarea .phase-badge.stub { background: var(--c-amber-100); color: var(--c-amber-800); }
+
+/* Footer — tiny monospace strip at the very bottom */
+.app-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px var(--s-4);
+    background: var(--c-slate-100); border-top: 1px solid var(--c-slate-200);
+    font-family: var(--font-mono); font-size: 10px; color: var(--c-slate-500);
 }
 
-.menu-vertical {
-    width: 100% !important;
-    max-width: 260px;
+/* ─── 5. Command bar ────────────────────────────────────────────────────── */
+
+.commandbar {
+    display: flex; align-items: center; gap: var(--s-1);
+    height: 40px; padding: 0 var(--s-4);
+    background: var(--c-white);
+    border-bottom: 1px solid var(--c-slate-200);
+}
+.commandbar-entity {
+    display: flex; align-items: center; gap: var(--s-2);
+    padding: 4px 10px 4px 6px; border-radius: var(--r-md);
+    background: var(--c-slate-100); color: var(--c-slate-800);
+    font-size: 12px; font-weight: 600;
+    margin-right: var(--s-2);
+}
+.commandbar-entity .count {
+    font-size: 10px; color: var(--c-slate-500);
+    background: var(--c-white); padding: 0 5px; border-radius: 3px;
+    font-weight: 500;
+}
+.commandbar-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: var(--r-md);
+    background: transparent; border: 0; cursor: pointer;
+    color: var(--c-slate-700); font-size: 12px; font-weight: 500;
+}
+.commandbar-btn:hover { background: var(--c-slate-100); color: var(--c-slate-900); }
+.commandbar-btn:disabled { color: var(--c-slate-400); cursor: not-allowed; }
+.commandbar-btn:disabled:hover { background: transparent; }
+.commandbar-divider {
+    width: 1px; height: 20px; background: var(--c-slate-200); margin: 0 4px;
+}
+.commandbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--s-1); }
+.commandbar-count {
+    font-size: 11px; color: var(--c-slate-500);
+    padding: 2px 8px; background: var(--c-slate-100); border-radius: 3px;
+    font-family: var(--font-mono);
 }
 
-.layout-page {
-    flex: 1;
-    min-width: 0;
-    margin-left: 0;
-    padding-left: 0;
-    width: 84%;
-    transition: margin-left 0.3s ease, width 0.3s ease;
+/* ─── 6. Content primitives ─────────────────────────────────────────────── */
+
+.page {
+    padding: var(--s-6); max-width: 1280px;
+}
+.page-header {
+    display: flex; align-items: center; gap: var(--s-3);
+    margin-bottom: var(--s-5);
+}
+.page-header .icon-box {
+    width: 40px; height: 40px; border-radius: var(--r-lg);
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid transparent;
+}
+.page-header .icon-box.indigo { background: var(--c-indigo-50); border-color: var(--c-indigo-100); color: var(--c-indigo-600); }
+.page-header .icon-box.emerald { background: var(--c-emerald-50); border-color: var(--c-emerald-100); color: var(--c-emerald-600); }
+.page-header .icon-box.amber  { background: var(--c-amber-50);   border-color: var(--c-amber-100);   color: var(--c-amber-600); }
+.page-header .icon-box.purple { background: var(--c-purple-50);  border-color: var(--c-purple-100);  color: var(--c-purple-600); }
+.page-header .icon-box.blue   { background: var(--c-blue-50);    border-color: var(--c-blue-100);    color: var(--c-blue-600); }
+.page-header h1 { color: var(--c-slate-900); }
+.page-header p  { font-size: 13px; color: var(--c-slate-500); margin-top: 2px; }
+
+/* Stat tiles — the KPI cards on dashboards */
+.stat-tile-grid {
+    display: grid; gap: var(--s-3);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-bottom: var(--s-6);
+}
+.stat-tile {
+    background: var(--c-white);
+    border: 1px solid var(--c-slate-200);
+    border-radius: var(--r-lg);
+    padding: var(--s-4);
+    display: flex; align-items: flex-start; gap: var(--s-3);
+}
+.stat-tile .tile-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--r-md);
+    background: var(--c-slate-50);
+}
+.stat-tile .tile-icon.indigo { color: var(--c-indigo-600); }
+.stat-tile .tile-icon.emerald { color: var(--c-emerald-600); }
+.stat-tile .tile-icon.amber  { color: var(--c-amber-600); }
+.stat-tile .tile-icon.purple { color: var(--c-purple-600); }
+.stat-tile .tile-icon.blue   { color: var(--c-blue-600); }
+.stat-tile .tile-icon.red    { color: var(--c-red-600); }
+.stat-tile .tile-icon.sky    { color: var(--c-sky-600); }
+.stat-tile .tile-body { flex: 1; min-width: 0; }
+.stat-tile .tile-label {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--c-slate-500); margin-bottom: 2px;
+}
+.stat-tile .tile-value {
+    font-size: 24px; font-weight: 700; color: var(--c-slate-900); line-height: 1.1;
+}
+.stat-tile .tile-sub {
+    font-size: 11px; color: var(--c-slate-500); margin-top: 4px;
 }
 
-/* Adjustments for larger screens */
-@media (min-width: 1920px) {
-    .layout-menu {
-        flex: 0 0 15%;
-        width: 15% !important;
-    }
-
-    .layout-page {
-        width: 85%;
-        padding-left: 0.2rem; /* Added minimal padding */
-    }
-
-    /* Adjust container padding for this breakpoint */
-    .container-xxl {
-        padding: 0.5rem; /* Reduced from default 1.5rem */
-    }
+/* Info panel — the "Where does this feed?" style callouts */
+.info-panel {
+    background: var(--c-white);
+    border: 1px solid var(--c-slate-200);
+    border-radius: var(--r-lg);
+    padding: var(--s-4);
+    margin-bottom: var(--s-4);
 }
+.info-panel.tone-slate { background: var(--c-slate-50); }
+.info-panel.tone-amber { background: var(--c-amber-50); border-color: #fde68a; }
+.info-panel h3 { margin-bottom: var(--s-2); }
+.info-panel p  { font-size: 13px; color: var(--c-slate-700); line-height: 1.55; }
 
-/* Even larger screens */
-@media (min-width: 2560px) {
-    .layout-menu {
-        flex: 0 0 14%;
-        width: 14% !important;
-    }
-
-    .layout-page {
-        width: 86%;
-    }
+/* Two-column info grid */
+.two-col-grid {
+    display: grid; gap: var(--s-6);
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    margin-bottom: var(--s-6);
 }
-
-/* Mobile styles */
-@media (max-width: 992px) {
-    .layout-menu {
-        position: fixed;
-        left: -260px;
-        top: 0;
-        width: 260px !important;
-        background: #fff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-        .layout-menu.show {
-            left: 0;
-        }
-
-    .layout-page {
-        margin-left: 0;
-        padding-left: 1rem !important;
-        width: 100%;
-    }
-
-    .layout-container {
-        overflow-x: hidden;
-    }
+.mini-table {
+    background: var(--c-white);
+    border: 1px solid var(--c-slate-200);
+    border-radius: var(--r-lg);
+    padding: var(--s-4);
 }
-
-.container-xxl {
-    padding: 1.5rem;
+.mini-table h3 { margin-bottom: 4px; color: var(--c-slate-700); }
+.mini-table .caption { font-size: 11px; color: var(--c-slate-500); margin-bottom: var(--s-3); }
+.mini-table table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.mini-table td {
+    padding: 6px 0; border-bottom: 1px solid var(--c-slate-100);
+    color: var(--c-slate-700);
 }
+.mini-table td.right { text-align: right; font-weight: 600; color: var(--c-slate-900); }
+.mini-table tr:last-child td { border-bottom: 0; }
+.mini-table td.mono { font-family: var(--font-mono); font-size: 12px; }
 
-/* Even larger screens */
-@media (min-width: 2560px) {
-    .layout-menu {
-        flex: 0 0 14%;
-        width: 14% !important;
-    }
-
-    .layout-page {
-        width: 86%;
-    }
+/* Empty state — shown when a grid has no data */
+.empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: var(--s-16) var(--s-6); text-align: center;
+    color: var(--c-slate-500);
 }
+.empty-state .es-icon { color: var(--c-slate-400); margin-bottom: var(--s-3); }
+.empty-state h2 { color: var(--c-slate-700); margin-bottom: var(--s-2); }
+.empty-state p  { font-size: 13px; }
 
-/* Mobile styles */
-@media (max-width: 992px) {
-    .layout-menu {
-        position: fixed;
-        left: -260px;
-        top: 0;
-        width: 260px !important;
-        background: #fff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
+/* ─── 7. Data grid ──────────────────────────────────────────────────────── */
 
-        .layout-menu.show {
-            left: 0;
-        }
-
-    .layout-page {
-        margin-left: 0;
-        padding-left: 1rem !important;
-        width: 100%;
-    }
-
-    .layout-container {
-        overflow-x: hidden;
-    }
+.grid-wrap {
+    padding: var(--s-4);
+    height: calc(100vh - var(--nav-h) - 40px - 40px);
+    overflow: auto;
 }
-
-.container-xxl {
-    padding: 1.5rem;
+.grid-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+    background: var(--c-white); border: 1px solid var(--c-slate-200);
+    border-radius: var(--r-lg); overflow: hidden;
 }
+.grid-table thead th {
+    background: var(--c-slate-50);
+    padding: 8px 12px; text-align: left;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--c-slate-600); border-bottom: 1px solid var(--c-slate-200);
+    position: sticky; top: 0; z-index: 1;
+}
+.grid-table tbody td {
+    padding: 8px 12px; border-bottom: 1px solid var(--c-slate-100);
+    color: var(--c-slate-800); vertical-align: middle;
+}
+.grid-table tbody tr:hover { background: var(--c-slate-50); cursor: pointer; }
+.grid-table tbody tr.selected { background: var(--c-indigo-50); }
+.grid-table .numeric { text-align: right; font-variant-numeric: tabular-nums; }
+.grid-table .mono { font-family: var(--font-mono); font-size: 12px; }
+
+/* Little pills used inside table cells */
+.pill {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    padding: 1px 6px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.pill.tone-slate   { background: var(--c-slate-100);   color: var(--c-slate-700); }
+.pill.tone-indigo  { background: var(--c-indigo-100);  color: var(--c-indigo-700); }
+.pill.tone-emerald { background: var(--c-emerald-100); color: var(--c-emerald-800); }
+.pill.tone-amber   { background: var(--c-amber-100);   color: var(--c-amber-800); }
+.pill.tone-blue    { background: var(--c-blue-100);    color: var(--c-blue-700); }
+.pill.tone-purple  { background: var(--c-purple-100);  color: var(--c-purple-700); }
+.pill.tone-red     { background: var(--c-red-100);     color: var(--c-red-800); }
+
+/* ─── 8. Icons — inline SVG helper ─────────────────────────────────────── */
+
+/* All icons are rendered as inline SVG via <svg class="icon"><use href="#icon-name"/></svg>.
+ * The sprite lives in Pages/Shared/_Icons.cshtml and is included ONCE per layout,
+ * hidden at the top of <body>. Change size via width/height attributes on each <svg>. */
+.icon { width: 16px; height: 16px; stroke-width: 2; stroke: currentColor; fill: none;
+        stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
+.icon-lg { width: 20px; height: 20px; }
+.icon-xl { width: 28px; height: 28px; }
+
+/* ─── 9. Utility classes (tiny subset — not a framework) ───────────────── */
+
+.flex    { display: flex; }
+.inline-flex { display: inline-flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--s-1); } .gap-2 { gap: var(--s-2); } .gap-3 { gap: var(--s-3); }
+.mt-1 { margin-top: var(--s-1); } .mt-2 { margin-top: var(--s-2); } .mt-3 { margin-top: var(--s-3); } .mt-4 { margin-top: var(--s-4); }
+.mb-1 { margin-bottom: var(--s-1); } .mb-2 { margin-bottom: var(--s-2); } .mb-3 { margin-bottom: var(--s-3); } .mb-4 { margin-bottom: var(--s-4); } .mb-5 { margin-bottom: var(--s-5); } .mb-6 { margin-bottom: var(--s-6); }
+.text-slate-500 { color: var(--c-slate-500); }
+.text-slate-600 { color: var(--c-slate-600); }
+.text-slate-700 { color: var(--c-slate-700); }
+.text-slate-900 { color: var(--c-slate-900); }
+.hidden { display: none; }

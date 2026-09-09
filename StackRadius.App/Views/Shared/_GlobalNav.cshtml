@@ -1,0 +1,65 @@
+@*
+    _GlobalNav.cshtml — the top strip.
+
+    From left to right:
+        [waffle] [brand badge + Asthra Master] · [Solution pill] · [App ▾] · [Area ▾]
+        ─── flex spacer ───
+        [search box] [help] [notifications] [user badge]
+
+    Interaction:
+        - waffle click       →  data-toggle="sidebar" (handled by site.js)
+        - other dropdowns    →  stubbed (opens no-op in this reference build; a real
+                                app would wire click → open Menu partial)
+
+    Model: the active AreaVm (used to show its Label on the right).
+*@
+@model StackRadius.Entity.AreaVm
+<div class="global-nav">
+    <button type="button" class="waffle-btn" data-toggle="sidebar" aria-label="Toggle sidebar">
+        <svg class="icon"><use href="#i-waffle"/></svg>
+    </button>
+
+    <div class="brand-block">
+        <div class="brand-badge bg-indigo">M</div>
+        <div class="brand-text">Asthra Master</div>
+    </div>
+
+     <div class="brand-block">        
+        <a href="/Client/Index">Clients</a>
+    </div>  
+
+    <div class="brand-block">        
+        <a href="/Dashboard/Dashboard">Dashboard</a>
+    </div>
+     <div class="brand-block">        
+        <a href="/nse/NSEClientRegistration/Index">NSE Client Registration</a>
+    </div>    
+
+    <div class="brand-block">
+        <a href="/NSE/NSEScheme"> NSE Schemes</a>
+    </div>
+
+    <span class="solution-pill">Funds</span>
+
+    <button type="button" class="app-switcher">
+        <svg class="icon"><use href="#i-book"/></svg>      
+        <a href="/NSE/NSEScheme"> NSE Schemes</a>
+        <svg class="icon" style="width:12px;height:12px"><use href="#i-chevron-down"/></svg>
+    </button>
+
+   
+    <div class="spacer"></div>
+
+    <div class="search-box">
+        <svg class="icon"><use href="#i-search"/></svg>
+        <input type="search" placeholder="Search schemes, AMCs, categories…" />
+    </div>
+
+    <button type="button" class="icon-btn" aria-label="Help">
+        <svg class="icon"><use href="#i-help"/></svg>
+    </button>
+    <button type="button" class="icon-btn" aria-label="Notifications">
+        <svg class="icon"><use href="#i-bell"/></svg>
+    </button>
+    <div class="user-badge" title="Muthukumar J">JM</div>
+</div>

@@ -1,0 +1,209 @@
+﻿@model IEnumerable<StackRadius.Entity.NSESchemeMasterModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "NSE Scheme Master";
+    ViewData["Title"] = "NSE Scheme master";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "nsescheme";
+    ViewData["FooterRight"] = "NSE MFSS Scheme catalogue — refreshed daily from NSE";
+}
+
+<style>
+    .button-group {
+        display: flex; /* Forces items into a row */
+        gap: 8px; /* Adds nice spacing between buttons */
+        align-items: center; /* Aligns them perfectly vertically */
+    }
+</style>
+
+<title>@ViewBag.Title</title>
+
+<form id="frmNSEScheme" role="form" class="form-horizontal" method="post" action="javascript:;">
+    <input type="hidden" id="FileType" name="FileType" value="SCH">
+
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div> Loading...
+    </div>
+
+    <!-- CommandBar -->
+    <div class="commandbar">
+        <div class="commandbar-entity">
+            <svg class="icon"><use href="#i-book" /></svg>
+            Scheme [Total Record Count here]
+            @*  <span class="count">@Model.Schemes.Count</span> *@
+        </div>
+
+        <button type="button" class="commandbar-btn">
+            <svg class="icon"><use href="#i-plus" /></svg>
+            Add
+        </button>
+        <button type="button" id="btnDownload" class="commandbar-btn">
+            <svg class="icon"><use href="#i-refresh" /></svg>
+            Refresh from NSE
+        </button>
+        <div class="commandbar-divider"></div>
+        <button type="button" class="commandbar-btn">
+            <svg class="icon"><use href="#i-filter" /></svg>
+            Filters
+        </button>
+        <div class="commandbar-right">
+            <button type="button" class="commandbar-btn">
+                <svg class="icon"><use href="#i-download" /></svg>
+                Export CSV
+            </button>
+            @*  <div class="commandbar-count">@Model.TotalRecords Schemes</div> *@
+        </div>
+    </div>
+
+    <div class="grid-wrap" style="width: 98%;">
+        <table id="tblNSEScheme" class="grid-table" >
+            <thead>
+                <tr>
+                    <th style="width:5%;">
+                        <input type="checkbox" id="chkbox" class="allchk" disabled="disabled">
+                    </th>
+                    <th>Action</th>
+                    <th>Unique Sr No</th>
+                    <th>Scheme Code</th>
+                    <th>ISIN</th>
+                    <th>AMC CODE</th>
+                    <th>Scheme Name</th>
+                    <th>Scheme Type</th>
+                    <th class="numeric">Min invest</th>
+                    <th>Settlement type</th>
+                    <th>SIP</th>
+                    <th>STP</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() > 0)
+                {
+                    foreach (var s in Model)
+                    {                  
+                        <tr>
+                            <td style="width:5%;">
+                                @if (@s.scheme_code != "1")
+                                {
+                                        <input type="checkbox" id="chkbox" class="singlrchk" disabled="disabled" unique_sr_no="@s.unique_sr_no">
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="chkbox" class="singlrchk" disabled unique_sr_no="@s.unique_sr_no">
+                                }
+                            </td>
+                             <td>
+                                <div class="button-group">                                   
+                                    <button type="button" id="btnView" value="@s.unique_sr_no" title="View" class="btnView">
+                                        <svg class="icon"><use href="#i-filter"></use></svg>
+                                    </button>
+                                    <button type="button" id="btnEdit" value="@s.unique_sr_no" title="Edit" class="btnEdit"> 
+                                        <svg class="icon"><use href="#i-filter" /></svg> 
+                                    </button>
+                                    <button type="button" id="btnDelete" value="@s.unique_sr_no" title="Delete" class="btnDelete"> 
+                                        <svg class="icon"><use href="#i-filter" /></svg>
+                                    </button>                                    
+                                </div>
+                        </td>
+                            <td class="mono">@s.unique_sr_no</td>
+                            <td class="mono">@s.scheme_code</td>
+                            <td class="mono">@s.isin</td>
+                            <td style="width: 10%;">@s.amc_code</td>
+                            <td style="width: 10%;">@s.scheme_name</td>
+                            <td style="width: 10%;"><span>@s.scheme_type</span></td>
+                            <td class="numeric">₹ @s.new_purchase_min_amount.ToString("N0")</td>
+                            <td class="mono">@s.settlement_type</td>
+                            <td>@(s.sip_allowed == "Y" ? "✓" : "")</td>
+                            <td>@(s.stp_enabled == "Y" ? "✓" : "")</td>                           
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+</form>
+
+<script type="text/javascript">
+
+    $(".btnView").click(function () { Process({ controller: "NSE/NSEScheme", action: "Edit", data: { mode: "View", id: $(this).attr("value") } }) });
+
+    //$("#btnAddNew").click(function () { Process({ controller: "NSEScheme", action: "Add" }); });
+    //$("#btnEdit").click(function () { Process({ controller: "NSEScheme", action: "Edit", data: { mode: "Edit", id: $(this).attr("value") } }) });
+    //GridExport({ columns: [0, 1, 2, 3, 4, 5], table: table = $('#tblNSEScheme').DataTable(), title: "NSE Schemes List" });
+
+</script>
+
+<script>
+    $('#btnDownload').click(function() {
+        const spinner = document.getElementById('loading-spinner');
+        var fileType = $("#FileType").val(); 
+
+        if (fileType == "" || fileType == null) {
+            Swal.fire({
+                title: "Select a File Type", 
+                text: "Please select a File Type.", 
+                icon: "error"
+            });   
+            return false;
+        } 
+        
+        // Disable button immediately after basic validation passes
+        $("#btnDownload").prop('disabled', true);
+
+        // // 1. Show the "Selected File Type" alert
+        // Swal.fire({
+        //     title: "Selected File Type", 
+        //     text: "Selected File Type is: " + fileType, 
+        //     icon: "info",
+        //     confirmButtonText: "Proceed with Download",
+        //     allowOutsideClick: false // Prevents closing by clicking outside
+        // }).then((result) => {
+        //     // 2. This code runs ONLY after the user clicks the confirmation button
+        //     if (result.isConfirmed) {
+                
+            // Show your loading spinner now that the process is starting
+            spinner.style.display = 'block';
+
+            $.ajax({
+                url: '@Url.Action("DownloadFile", "MasterDownload")',
+                type: 'POST',
+                data: $("#frmNSEScheme").serialize(),
+                success: function(result) {
+                    if (result.status == "Success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: result.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                            confirmButtonColor: '#28a745',
+                            showConfirmButton: true
+                        }).then(() => {  
+                            window.location.href = '@Url.Action("Index", "NSEScheme")';                                       
+                        });
+                    }
+                    else {
+                        Swal.fire("Error", result.message, "error");
+                        $("#btnDownload").prop('disabled', false); // Re-enable if failed
+                    }
+                    spinner.style.display = 'none';
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: "Error", 
+                        text: "Error occurred while downloading file: " + error, 
+                        icon: "error"
+                    }); 
+
+                    $("#btnDownload").prop('disabled', false); // Re-enable if failed
+                    spinner.style.display = 'none';
+                }
+            });
+
+            // } else {
+            //     // If they cancel out or close it somehow, re-enable the button
+            //     $("#btnDownload").prop('disabled', false);
+            // }            
+            //});
+        $("#btnDownload").prop('disabled', false);
+    });
+</script>
