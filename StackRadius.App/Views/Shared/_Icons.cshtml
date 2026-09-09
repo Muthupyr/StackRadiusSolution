@@ -1,0 +1,192 @@
+@*
+    _Icons.cshtml — inline SVG icon sprite.
+
+    Rendered ONCE per page inside <body>, invisible. Every icon on the page
+    references a symbol here via <svg class="icon"><use href="#icon-name"/></svg>.
+
+    Icons are traced by hand from Lucide (MIT — https://lucide.dev). No external
+    dependency; no CDN; no font file. Adding a new icon = paste a new <symbol>.
+*@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <!-- LayoutDashboard — dashboard grid icon -->
+    <symbol id="i-dashboard" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="9"/>
+        <rect x="14" y="3" width="7" height="5"/>
+        <rect x="14" y="12" width="7" height="9"/>
+        <rect x="3" y="16" width="7" height="5"/>
+    </symbol>
+    <!-- Database -->
+    <symbol id="i-database" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="5" rx="9" ry="3"/>
+        <path d="M3 5v14a9 3 0 0 0 18 0V5"/>
+        <path d="M3 12a9 3 0 0 0 18 0"/>
+    </symbol>
+    <!-- BookOpen -->
+    <symbol id="i-book" viewBox="0 0 24 24">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </symbol>
+    <!-- Building2 -->
+    <symbol id="i-building" viewBox="0 0 24 24">
+        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+        <path d="M6 12H4a2 2 0 0 0-2 2v8h4"/>
+        <path d="M18 9h2a2 2 0 0 1 2 2v11h-4"/>
+        <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+    </symbol>
+    <!-- TrendingUp -->
+    <symbol id="i-trending-up" viewBox="0 0 24 24">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+        <polyline points="16 7 22 7 22 13"/>
+    </symbol>
+    <!-- TrendingDown -->
+    <symbol id="i-trending-down" viewBox="0 0 24 24">
+        <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
+        <polyline points="16 17 22 17 22 11"/>
+    </symbol>
+    <!-- BarChart3 -->
+    <symbol id="i-bar-chart" viewBox="0 0 24 24">
+        <path d="M3 3v18h18"/>
+        <path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+    </symbol>
+    <!-- Layers -->
+    <symbol id="i-layers" viewBox="0 0 24 24">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+    </symbol>
+    <!-- ArrowLeftRight -->
+    <symbol id="i-arrows" viewBox="0 0 24 24">
+        <path d="M8 3 4 7l4 4"/><path d="M4 7h16"/>
+        <path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>
+    </symbol>
+    <!-- Percent -->
+    <symbol id="i-percent" viewBox="0 0 24 24">
+        <line x1="19" y1="5" x2="5" y2="19"/>
+        <circle cx="6.5" cy="6.5" r="2.5"/>
+        <circle cx="17.5" cy="17.5" r="2.5"/>
+    </symbol>
+    <!-- Award -->
+    <symbol id="i-award" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="6"/>
+        <polyline points="15.477 12.89 17 22 12 19 7 22 8.523 12.89"/>
+    </symbol>
+    <!-- Coins -->
+    <symbol id="i-coins" viewBox="0 0 24 24">
+        <circle cx="8" cy="8" r="6"/>
+        <path d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
+        <path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>
+    </symbol>
+    <!-- GitBranch -->
+    <symbol id="i-branch" viewBox="0 0 24 24">
+        <line x1="6" y1="3" x2="6" y2="15"/>
+        <circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+        <path d="M18 9a9 9 0 0 1-9 9"/>
+    </symbol>
+    <!-- Settings -->
+    <symbol id="i-settings" viewBox="0 0 24 24">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+        <circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <!-- Shield / ShieldAlert -->
+    <symbol id="i-shield-alert" viewBox="0 0 24 24">
+        <path d="M20 13c0 5-3.5 7.5-8 8.5-4.5-1-8-3.5-8-8.5V5l8-3 8 3z"/>
+        <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </symbol>
+    <!-- Search -->
+    <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </symbol>
+    <!-- Bell -->
+    <symbol id="i-bell" viewBox="0 0 24 24">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+    </symbol>
+    <!-- HelpCircle -->
+    <symbol id="i-help" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+    <!-- Grid3x3 (waffle) -->
+    <symbol id="i-waffle" viewBox="0 0 24 24">
+        <rect width="18" height="18" x="3" y="3" rx="2"/>
+        <path d="M3 9h18"/><path d="M3 15h18"/>
+        <path d="M9 3v18"/><path d="M15 3v18"/>
+    </symbol>
+    <!-- Chevron right -->
+    <symbol id="i-chevron-right" viewBox="0 0 24 24">
+        <polyline points="9 18 15 12 9 6"/>
+    </symbol>
+    <!-- Chevron down -->
+    <symbol id="i-chevron-down" viewBox="0 0 24 24">
+        <polyline points="6 9 12 15 18 9"/>
+    </symbol>
+    <!-- ArrowLeft -->
+    <symbol id="i-arrow-left" viewBox="0 0 24 24">
+        <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+    </symbol>
+    <!-- Copy -->
+    <symbol id="i-copy" viewBox="0 0 24 24">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </symbol>
+    <!-- Fingerprint (self / identity) -->
+    <symbol id="i-fingerprint" viewBox="0 0 24 24">
+        <path d="M12 3a9 9 0 0 0-9 9v3.5c0 1.4 1.1 2.5 2.5 2.5S8 16.9 8 15.5V12a4 4 0 0 1 8 0v3.5c0 2.5-2 4.5-4.5 4.5"/>
+        <path d="M8 12a4 4 0 0 1 8 0v3.5c0 2.5-2 4.5-4.5 4.5"/>
+    </symbol>
+    <!-- RefreshCw -->
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+        <path d="M3 3v5h5"/>
+        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+        <path d="M16 16h5v5"/>
+    </symbol>
+    <!-- Download -->
+    <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+    </symbol>
+    <!-- FileBarChart2 (reports) -->
+    <symbol id="i-file-chart" viewBox="0 0 24 24">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <path d="M12 18v-4"/><path d="M8 18v-2"/><path d="M16 18v-6"/>
+    </symbol>
+    <!-- CheckCircle2 -->
+    <symbol id="i-check-circle" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="m9 12 2 2 4-4"/>
+    </symbol>
+    <!-- Sparkles -->
+    <symbol id="i-sparkles" viewBox="0 0 24 24">
+        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+    </symbol>
+    <!-- Plus -->
+    <symbol id="i-plus" viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+    </symbol>
+    <!-- Filter -->
+    <symbol id="i-filter" viewBox="0 0 24 24">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+    </symbol>
+    <!-- FolderTree (navigation / sitemap) -->
+    <symbol id="i-folder-tree" viewBox="0 0 24 24">
+        <path d="M20 10a2 2 0 0 0-2-2h-6l-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2Z"/>
+        <path d="M11 11h4"/><path d="M11 15h4"/>
+    </symbol>
+    <!-- NotebookTabs (calendar / documentation) -->
+    <symbol id="i-notebook" viewBox="0 0 24 24">
+        <path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/>
+        <rect width="16" height="20" x="4" y="2" rx="2"/>
+        <path d="M15 2v20"/>
+    </symbol>
+    <!-- Languages (localisation) -->
+    <symbol id="i-globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        <path d="M2 12h20"/>
+    </symbol>
+</svg>

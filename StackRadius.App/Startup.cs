@@ -26,6 +26,9 @@ namespace StackRadius
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register your Singleton service here
+            services.AddTransient<StackRadius.Services.SitemapService>();
+
             services.AddControllersWithViews();
         }
 
@@ -42,6 +45,7 @@ namespace StackRadius
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

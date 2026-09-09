@@ -1,0 +1,13 @@
+@*
+    _SessionBand.cshtml — the thin green strip above the top nav.
+    Shows "Signed in as {name} · {email} · via {provider} · {AAL} · sessionId".
+    Model: SessionVm  (see Models/SitemapModels.cs)
+*@
+@model StackRadius.Entity.SessionVm
+<div class="session-band">
+    <span class="session-pill">Session active</span>
+    <span>Signed in as <strong>@Model.SignedInName</strong> (@Model.SignedInEmail)</span>
+    <span class="session-meta">· @Model.Location · @Model.Aal · via @Model.Provider</span>
+    <span class="spacer"></span>
+    <span class="session-meta">@Model.SessionId</span>
+</div>

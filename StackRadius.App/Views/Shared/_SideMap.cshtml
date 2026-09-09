@@ -1,0 +1,56 @@
+@*
+    _SideMap.cshtml — the left rail. Two-level Area → SubArea tree.
+
+    Model: (IReadOnlyList<AreaVm> areas, string areaKey, string? subAreaKey)
+        - areas       — full tree from SitemapService
+        - areaKey     — which Area is active (URL segment 2)
+        - subAreaKey  — which SubArea is active (URL segment 3)
+
+    Interaction (see site.js):
+        - Click Area header    → expand/collapse (accordion; only one open at a time)
+        - Click SubArea row    → navigate to /master/{area}/{subarea}
+        - Active SubArea's Area is auto-expanded on page load.
+*@
+@model ValueTuple<IReadOnlyList<StackRadius.Entity.AreaVm>, string, string?>
+@{
+    var (areas, activeAreaKey, activeSubAreaKey) = Model;
+}
+<nav class="side-map">
+    <div class="side-map-header">
+        <div class="label">Current App</div>
+        <div class="value">Master · reference data</div>
+    </div>
+    <div class="side-map-areas">
+        @foreach (var area in areas)
+        {
+            var isActive = area.Key.Equals(activeAreaKey, StringComparison.OrdinalIgnoreCase);
+            <div class="side-map-area">
+                <button type="button" class="side-map-area-header @(isActive ? "active" : "")">
+                    <svg class="icon"><use href="@("#" + area.IconId)"/></svg>
+                    <span>@area.Label</span>
+                    <svg class="icon chevron"><use href="#i-chevron-right"/></svg>
+                </button>
+                <div class="side-map-area-groups" style="display:@(isActive ? "block" : "none")">
+                    @foreach (var group in area.Groups)
+                    {
+                        <div class="side-map-group-label">@group.Label</div>
+                        @foreach (var sub in group.SubAreas)
+                        {
+                            var isSubActive = sub.Key.Equals(activeSubAreaKey, StringComparison.OrdinalIgnoreCase);
+                            <a class="side-map-subarea @(isSubActive ? "active" : "")"
+                               href="/master/@area.Key/@sub.Key"
+                               title="@sub.Hint">
+                                <svg class="icon"><use href="@("#" + sub.IconId)"/></svg>
+                                <span>@sub.Label</span>
+                                @if (sub.Phase == "stub")
+                                {
+                                    <span class="phase-badge stub">stub</span>
+                                }
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</nav>

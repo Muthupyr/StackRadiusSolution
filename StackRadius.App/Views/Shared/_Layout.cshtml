@@ -1,13 +1,64 @@
-﻿<!DOCTYPE html>
+﻿
+@*
+    ══════════════════════════════════════════════════════════════════════════
+    _Layout.cshtml — the outer chrome every page wears.
+
+    Grid layout (top → bottom):
+        ┌───────────────────────────────────────────────────────────────┐
+        │ Session band (28px)  — Pages/Shared/_SessionBand.cshtml       │
+        ├───────────────────────────────────────────────────────────────┤
+        │ Global nav  (48px)  — Pages/Shared/_GlobalNav.cshtml          │
+        ├───────────────────────────────────────────────────────────────┤
+        │ Breadcrumb          — Pages/Shared/_BreadCrumb.cshtml         │
+        ├─────────────┬─────────────────────────────────────────────────┤
+        │             │                                                 │
+        │  SideMap    │  @RenderBody() — one .cshtml file per URL       │
+        │  (256px)    │                                                 │
+        │  _SideMap.  │                                                 │
+        │  cshtml     │                                                 │
+        │             │                                                 │
+        ├─────────────┴─────────────────────────────────────────────────┤
+        │ Footer  — small monospace strip                                │
+        └───────────────────────────────────────────────────────────────┘
+
+    Layout viewdata contract — set per-page in the page's @{} block:
+        ViewData["Title"]       = "Master Data home";
+        ViewData["AreaKey"]     = "dashboard";       // matches SitemapService area.Key
+        ViewData["SubAreaKey"]  = "md-home";         // matches SubArea.Key
+    ══════════════════════════════════════════════════════════════════════════
+*@
+
+@inject StackRadius.Services.SitemapService Sitemap
+@{
+       var areaKey = (string?)ViewData["AreaKey"] ?? "dashboard";
+    var subAreaKey = (string?)ViewData["SubAreaKey"];
+       var (activeArea, activeSubArea) = Sitemap.FindByKeys(areaKey, subAreaKey);
+ 
+    var breadcrumb = new List<StackRadius.Entity.BreadcrumbItem>
+    {
+        new("Master", "/master/dashboard/md-home"),
+        new(activeArea?.Label ?? areaKey, null),
+    };
+
+
+     if (activeSubArea is not null) breadcrumb.Add(new(activeSubArea.Label, null));
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Asthra Master</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - StackRadius</title>
     <link rel="stylesheet" href="~/css/site.css" />
-    
+
     <!-- Jquery Core Js -->
-    <script src="~/lib/jquery/jquery.js"></script> 
+    <script src="~/lib/jquery/jquery.js"></script>
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/jquery/jquery-ui.min.js"></script>
     <script src="~/lib/jquery/jquery.validate.js"></script>
@@ -19,13 +70,13 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap-grid.css" rel="stylesheet" />
-    
-  @*   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>  
+
+    @*   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>  
     <script src="bootstrap/js/bootstrap.min.js"></script>  
  *@
     <!-- datetimepicker  Js -->
-    <script src="~/lib/jquery/jquery.datetimepicker.full.js"></script> 
-    <link href="~/css/jquery.datetimepicker.css" rel="stylesheet" />  
+    <script src="~/lib/jquery/jquery.datetimepicker.full.js"></script>
+    <link href="~/css/jquery.datetimepicker.css" rel="stylesheet" />
 
     <!-- Jquery datatable -->
     <script src="~/lib/jquery-datatable/jquery.dataTables.js"></script>
@@ -49,12 +100,10 @@
     <link href="~/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-
 </head>
-
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -67,14 +116,23 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MasterDownload" asp-action="Download">Master Download</a>
-                        </li>                         
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        </li>
+
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="NSEScheme" asp-action="Index">NSE Scheme</a>
+                        </li>
+                        @*  
+                           <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="MasterDownload" asp-action="Index">Master Download</a>
+                        </li>                                               
+                        < li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="Index">Client</a>
                         </li>                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="ClientProfile" asp-action="Index">Client Profile</a>
-                        </li>
+                        </li> 
+                         *@  
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -86,18 +144,24 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <partial name="_Icons" />
+
+    <div class="app-shell">
+        <partial name="_SessionBand" model="Sitemap.Session" />
+         <partial name="_GlobalNav" model="activeArea" />
+       <partial name="_BreadCrumb" model="breadcrumb" />
+        <div class="app-body">
+             <partial name="_SideMap" model="(Sitemap.MasterAppSitemap, areaKey, subAreaKey)" /> 
+            <div class="app-content">
+                @RenderBody()
+            </div>
+        </div>
+        <footer class="app-footer">
+            <div>Asthra Master · port 5220 · Razor Pages reference build</div>
+            <div>@ViewData["FooterRight"]</div>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - StackRadius - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>   
-   
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
 </body>
 </html>
