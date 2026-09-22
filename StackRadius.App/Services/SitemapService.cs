@@ -19,13 +19,27 @@ public sealed class SitemapService
     public IReadOnlyList<AreaVm> MasterAppSitemap { get; } = new AreaVm[]
     {
         new(
+            Key:    "admin",
+            Label:  "Admin",
+            IconId: "i-dashboard",
+            Phase:  "live",
+            Groups: new GroupVm[]
+            {
+                new(
+                    Label: "Admin",
+                    SubAreas: new SubAreaVm[]
+                    {
+                        new("MasterUser", "Master User", "i-dashboard", "live", "")
+                    }),
+            }),
+        new(
             Key:    "dashboard",
             Label:  "Dashboard",
             IconId: "i-dashboard",
             Phase:  "live",
             Groups: new GroupVm[]
             {
-                new(
+               new(
                     Label: "Overview",
                     SubAreas: new SubAreaVm[]
                     {
@@ -53,7 +67,9 @@ public sealed class SitemapService
                     Label: "Feeds",
                     SubAreas: new SubAreaVm[]
                     {
+                        new("Client", "Client Master", "i-dashboard", "live", ""),
                         new("nse-nav",    "NAV history",   "i-trending-down", "stub", "Daily NAV time-series"),
+
                     }),
             }),
         new(
@@ -114,12 +130,12 @@ public sealed class SitemapService
     };
 
     public SessionVm Session { get; } = new(
-        SignedInName:  "Muthukumar J",
+        SignedInName: "Muthukumar J",
         SignedInEmail: "muthupyr@yahoo.com",
-        Location:      "Chennai, IN",
-        Aal:           "",
-        SessionId:     "",
-        Provider:      "");
+        Location: "Chennai, IN",
+        Aal: "",
+        SessionId: "",
+        Provider: "");
 
     /// <summary>Find the (Area, SubArea) tuple that matches the current URL segments — used by the SideMap partial.</summary>
     public (AreaVm Area, SubAreaVm SubArea) FindByKeys(string areaKey, string subAreaKey)

@@ -14,6 +14,7 @@
     Model: the active AreaVm (used to show its Label on the right).
 *@
 @model StackRadius.Entity.AreaVm
+
 <div class="global-nav">
     <button type="button" class="waffle-btn" data-toggle="sidebar" aria-label="Toggle sidebar">
         <svg class="icon"><use href="#i-waffle"/></svg>
@@ -24,20 +25,9 @@
         <div class="brand-text">Asthra Master</div>
     </div>
 
-     <div class="brand-block">        
-        <a href="/Client/Index">Clients</a>
-    </div>  
-
     <div class="brand-block">        
-        <a href="/Dashboard/Dashboard">Dashboard</a>
-    </div>
-     <div class="brand-block">        
         <a href="/nse/NSEClientRegistration/Index">NSE Client Registration</a>
     </div>    
-
-    <div class="brand-block">
-        <a href="/NSE/NSEScheme"> NSE Schemes</a>
-    </div>
 
     <span class="solution-pill">Funds</span>
 
@@ -47,7 +37,17 @@
         <svg class="icon" style="width:12px;height:12px"><use href="#i-chevron-down"/></svg>
     </button>
 
-   
+    <button type="button" class="app-switcher">
+        <svg class="icon"><use href="#i-book"/></svg>
+        Master
+        <svg class="icon" style="width:12px;height:12px"><use href="#i-chevron-down"/></svg>
+    </button>
+
+    <button type="button" class="area-label">
+        @(Model?.Label ?? "—")
+        <svg class="icon" style="width:12px;height:12px"><use href="#i-chevron-down"/></svg>
+    </button>
+
     <div class="spacer"></div>
 
     <div class="search-box">

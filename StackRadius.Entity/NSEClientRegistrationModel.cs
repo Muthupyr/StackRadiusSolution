@@ -7,14 +7,14 @@ namespace StackRadius.Entity
         public string reg_details { get; set; }   // jsonb in DB table
         public string client_code { get; set; }
         public string primary_holder_first_name { get; set; }
-        public string? primary_holder_middle_name { get; set; }
-        public string? primary_holder_last_name { get; set; }
-        public string? tax_status { get; set; }
-        public string? gender { get; set; }
+        public string primary_holder_middle_name { get; set; }
+        public string primary_holder_last_name { get; set; }
+        public string tax_status { get; set; }
+        public string gender { get; set; }
         public DateTime primary_holder_dob_incorporation { get; set; }
-        public string? occupation_code { get; set; }
-        public string? holding_nature { get; set; }
-        public string? second_holder_first_name { get; set; }
+        public string occupation_code { get; set; }
+        public string holding_nature { get; set; }
+        public string second_holder_first_name { get; set; }
         public string? second_holder_middle_name { get; set; }
         public string? second_holder_last_name { get; set; }
         public string? third_holder_first_name { get; set; }

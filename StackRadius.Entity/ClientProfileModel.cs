@@ -6,7 +6,6 @@ namespace StackRadius.Entity
 {
     public class ClientProfileModel : JSONBaseClass
     {
-        public string Mode { get; set; }
         public string auth_email_sent { get; set; } // "Y",
         public string auth_status { get; set; } // "SUCCESS",
         public string member_code { get; set; } // "1006168",

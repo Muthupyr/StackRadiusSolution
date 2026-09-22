@@ -1,0 +1,287 @@
+﻿
+/* Styles for the Client page only (neutral greys, no colours) */
+.page .card {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.page .card-header {
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 14px 20px;
+}
+
+.page .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.page .header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Search panel: textbox on its own line, buttons below it */
+.page .search-bar {
+    display: block;
+}
+
+.page .btn-icon {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .page .btn-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+.page .search-bar .form-control {
+    display: block;
+    width: 280px;
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+
+.page .search-bar .btn {
+    margin-right: 6px;
+}
+
+.page .search-panel {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* --- Sort ascending / descending icons on headers --- */
+.page table.dataTable thead th.sorting,
+.page table.dataTable thead th.sorting_asc,
+.page table.dataTable thead th.sorting_desc {
+    position: relative;
+    cursor: pointer;
+}
+
+    .page table.dataTable thead th.sorting:after,
+    .page table.dataTable thead th.sorting_asc:after,
+    .page table.dataTable thead th.sorting_desc:after {
+        position: absolute;
+        right: 8px;
+        font-family: inherit; /* stop relying on Glyphicons -> no more empty boxes */
+        font-size: 12px;
+    }
+
+    .page table.dataTable thead th.sorting:after {
+        content: "\2195";
+        opacity: .35;
+    }
+    /* unsorted */
+    .page table.dataTable thead th.sorting_asc:after {
+        content: "\2191";
+        opacity: .9;
+    }
+    /* up */
+    .page table.dataTable thead th.sorting_desc:after {
+        content: "\2193";
+        opacity: .9;
+    }
+/* down */
+
+/* --- Pagination footer: space the arrows out as proper buttons --- */
+.page .dataTables_paginate {
+    padding-top: 12px;
+    text-align: center;
+}
+
+    .page .dataTables_paginate ul.pagination {
+        display: inline-flex;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        .page .dataTables_paginate ul.pagination li a {
+            display: inline-block;
+            min-width: 36px;
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: #fff;
+            color: #212529;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+            .page .dataTables_paginate ul.pagination li a:hover {
+                background: #f1f3f5;
+            }
+
+        .page .dataTables_paginate ul.pagination li.active a {
+            background: #212529;
+            border-color: #212529;
+            color: #fff;
+        }
+
+        .page .dataTables_paginate ul.pagination li.disabled a {
+            color: #adb5bd;
+            background: #fff;
+            pointer-events: none;
+            cursor: default;
+        }
+
+.page {
+    background: #f8fafc; /* the pale color shows in the space around the card */
+}
+
+.sr-page__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 6px;
+    margin-bottom: 6px;
+}
+
+    .sr-page__title h1 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+.sr-badge-app {
+    background: #eef2ff;
+    color: #4338ca;
+    border: 1px solid #c7d2fe;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 4px 10px;
+}
+
+.page .card {
+    border: none;
+    box-shadow: none;
+}
+
+.page .card {
+    background: #f8fafc; /* the pale strip color */
+}
+
+/*---------------------------------- */
+/*client addd */
+.page-form .card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+}
+
+.page-form .card-header {
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 16px 20px;
+}
+
+.page-form .card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.page-form .card-body {
+    padding: 20px;
+}
+
+.page-form .form-label {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #334155;
+}
+
+.page-form .req {
+    color: #dc2626;
+    margin-left: 2px;
+}
+
+.page-form .form-control,
+.page-form .form-select {
+    height: 40px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+}
+
+    .page-form .form-control:focus,
+    .page-form .form-select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgb(37 99 235 / 0.15);
+    }
+
+.form-actions {
+    display: flex;
+    justify-content: flex-start; /* buttons on the right; use center if you prefer */
+    gap: 10px;
+    padding-top: 18px;
+    margin-top: 22px;
+    border-top: 1px solid #dee2e6;
+}
+
+    .form-actions .btn {
+        min-width: 110px;
+        padding: 8px 18px;
+        font-size: 14px;
+    }
+
+/* All accordion headers stay highlighted (blue), open or closed */
+.accordion-button,
+.accordion-button:not(.collapsed) {
+    background-color: #eff6ff; /* light blue */
+    color: #2563eb; /* blue text */
+    box-shadow: none;
+}
+    /* keep the arrow visible on the blue background */
+    .accordion-button::after {
+        filter: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(37, 99, 235, 0.3);
+    }
+
+/* ---- Accordion body: record-style key/value rows ---- */
+
+
+/* ===== PASTE THE NEW BLOCK BELOW THIS LINE ===== */
+
+.accordion-body .row > [class*="col-"] {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+.accordion-body p {
+    display: flex;
+    align-items: baseline;
+    gap:450px;
+    margin: 0;
+    padding: 11px 2px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+    color: black;
+}
+
+    .accordion-body p strong {
+        flex: 0 0 240px;
+        color:black;
+        font-weight: 500;
+    }
+
+    .accordion-body p:last-child {
+        border-bottom: none;
+    }

@@ -1,0 +1,19 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using StackRadius.Repository;
+
+namespace StackRadius.Entity
+{
+   public class ErrorLogModel
+    {
+        public string UserName { get; set; }
+        public DateTime DateTime { get; set; }
+        public string ErrorLocation { get; set; }
+        public string ErrorType { get; set; }
+        public string ErrorDescription { get; set; }
+    }
+
+}

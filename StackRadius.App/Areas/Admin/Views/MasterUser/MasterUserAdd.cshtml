@@ -1,0 +1,154 @@
+﻿@model StackRadius.Entity.MasterUserModel
+@{
+    ViewBag.Title = "User Add";
+    ViewData["Title"] = "NSE User";
+    ViewData["AreaKey"] = "admin";
+    ViewData["SubAreaKey"] = "user";
+    ViewData["FooterRight"] = "";
+}
+
+<link href="~/css/client.css" rel="stylesheet" />
+
+<title>@ViewBag.Title</title>
+
+<div class="container-fluid client-page">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+                <div class="card-header">
+                    <h2 class="card-title">
+                        @if (Model.Mode == "Edit")
+                        {
+                            <text>User Edit</text>
+                        }
+                        else if (Model.Mode == "Save")
+                        {
+                            <text>User Add</text>
+                        }
+                        else
+                        {
+                            <text>User View</text>
+                        }
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    <form id="MasterUserAdd" role="form" method="post" action="javascript:;">
+                        @Html.HiddenFor(a => a.Mode)
+
+                        @if (Model.Mode == "Save" || Model.Mode == "Edit")
+                        {
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">User Id<span class="req">*</span></label>
+                                    @Html.TextBoxFor(a => a.MasterUserId, new { @class = "form-control numericOnly", id = "MasterUserId", maxlength = 8, placeholder = "User Id", required = "required" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">User Name<span class="req">*</span></label>
+                                    @Html.TextBoxFor(a => a.UserName, new { @class = "form-control", id = "UserName", maxlength = 50, placeholder = "User Name", required = "required" })
+                                </div>
+                            </div>
+                        }
+
+                        <div class="js-sweetalert">
+                            <div class="form-actions">
+                                @if (Model.Mode == "Save")
+                                {
+                                    <button title="Save" type="submit" id="btnSave" class="btn btn-primary">Save</button>
+                                }
+                                else if (Model.Mode == "Edit")
+                                {
+                                    <button title="Update" type="submit" id="btnSave" class="btn btn-primary">Update</button>
+                                }
+                                <button title="Back" id="btnCancel" class="btn btn-outline-secondary"
+                                        onclick="location.href = '/Admin/MasterUser/Index'">
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('#btnSave').click(function () {
+        $("#btnSave").prop('disabled', true);
+        $.ajax({
+            url: '@Url.Action("InsertUpdateMasterUser", "MasterUser")',
+            type: 'POST',
+            data: $("#MasterUserAdd").serialize(),
+            success: function (result) {
+                if (result.status == "save") {
+                    if (result.message == "success") {
+                        $("#btnSave").prop('disabled', false);
+                        $('#MasterUserAdd').each(function () { this.reset(); });
+                        Swal.fire("", "Record added successfully", "success");
+                    }
+                    else if (result.message == "exists") {
+                        Swal.fire("", "User already exists.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else {
+                        Swal.fire("", "Record added failed.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                } else if (result.status == "update") {
+                    if (result.message == "success") {
+                        Swal.fire("", "Record updated successfully.", "success");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else if (result.message == "notexists") {
+                        Swal.fire("", "User not exists.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else {
+                        Swal.fire("", "Record updated failed.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                }
+                else {
+                    Swal.fire("", result.message, "error");
+                    $("#btnSave").prop('disabled', false);
+                }
+            }
+        });
+    });
+
+</script>
+
+<script>
+        
+    // Toggle search panel (you already have this)
+    $(document).on('click', '#btnToggleSearch', function () {
+        var $panel = $('#searchPanel');
+        $panel.toggleClass('d-none');
+        var isOpen = !$panel.hasClass('d-none');
+        $(this).attr('aria-expanded', isOpen);
+        if (isOpen) {$('#txtUserName').trigger('focus'); }
+    });
+
+    // SEARCH → reload the grid (it re-reads #txtClientName automatically)
+    $(document).on('click', '#btnSearch', function () {
+        ReloadDatatable();
+    });
+
+    // Optional: press Enter in the box = Search
+    $(document).on('keypress', '#txtUserName', function (e) {
+        if (e.which === 13) {e.preventDefault(); ReloadDatatable(); }
+    });
+
+    // RESET → clear the box, then reload to show everything again
+    $(document).on('click', '#btnReset', function () {
+        $('#txtUserName').val('');
+            ReloadDatatable();
+        })
+</script>
+
+

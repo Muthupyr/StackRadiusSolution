@@ -107,9 +107,9 @@ namespace StackRadius.Repository
 
         private string RemoveViewPropertiesFromJson(string jsonData)
         {
-            jsonData = Common.Common.RemovePropertyFromJson(jsonData, "Mode");
-            jsonData = Common.Common.RemovePropertyFromJson(jsonData, "AMCCodeList");
-            jsonData = Common.Common.RemovePropertyFromJson(jsonData, "ClientList");
+            jsonData = Common.RemovePropertyFromJson(jsonData, "Mode");
+            jsonData = Common.RemovePropertyFromJson(jsonData, "AMCCodeList");
+            jsonData = Common.RemovePropertyFromJson(jsonData, "ClientList");
             return jsonData;
         }
     }

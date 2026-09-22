@@ -1,0 +1,14 @@
+/* GRID MODULE — the AG Grid host (Views/Shared/_Grid.cshtml). AG Grid's own look comes from its Quartz
+   theme, coloured in sr-grid.js from the design tokens; this file only sizes the host and styles the
+   cells the module draws. */
+
+.sr-grid { flex: 1; min-height: 420px; width: 100%; }
+.sr-grid--auto { flex: none; min-height: 0; }
+
+.sr-grid__name { font-weight: 500; text-decoration: none; }
+.sr-grid__name:hover { text-decoration: underline; }
+.sr-grid__select-head { display: flex; align-items: center; justify-content: center; width: 100%; }
+.sr-grid__menu { max-height: 60vh; overflow-y: auto; }
+
+.sr-grid-tabs .nav-link { font-size: 13.5px; }
+.sr-grid-tabs .badge { font-weight: 500; }

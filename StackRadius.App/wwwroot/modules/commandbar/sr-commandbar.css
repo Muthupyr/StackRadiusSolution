@@ -1,0 +1,12 @@
+/* COMMAND BAR MODULE — the button row above a page (Views/Shared/_CommandBar.cshtml). */
+
+.sr-commandbar {
+  flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 8px 16px; background: var(--sr-surface); border-bottom: 1px solid var(--sr-border);
+}
+.sr-commandbar__left, .sr-commandbar__right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sr-commandbar__title { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 0 8px 0 0; margin-right: 4px; border-right: 1px solid var(--sr-border); }
+.sr-commandbar__quick { width: 240px; }
+.sr-commandbar__count { font-size: 13px; color: var(--sr-text-dim); white-space: nowrap; }
+.sr-commandbar .btn { display: inline-flex; align-items: center; gap: 6px; }
+.sr-commandbar .btn.active { background: var(--sr-primary-bg); border-color: var(--sr-primary-border); color: var(--sr-primary); }

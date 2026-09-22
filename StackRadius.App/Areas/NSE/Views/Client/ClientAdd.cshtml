@@ -1,0 +1,144 @@
+﻿@model StackRadius.Entity.ClientModel
+@{
+    ViewBag.Title = "Client Add";
+    ViewData["Title"] = "NSE Client";
+    ViewData["AreaKey"] = "nse";
+    ViewData["SubAreaKey"] = "nseclient";
+    ViewData["FooterRight"] = "NSE refreshed daily from NSE";
+}
+
+<link href="~/css/client.css" rel="stylesheet" />
+
+<title>@ViewBag.Title</title>
+
+<div class="container-fluid page">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+
+                <div class="card-header">
+                    <h2 class="card-title">
+                        @if (Model.Mode == "Edit")
+                        {
+                            <text>Client Edit</text>
+                        }
+                        else if (Model.Mode == "Save")
+                        {
+                            <text>Client Add</text>
+                        }
+                        else
+                        {
+                            <text>Client View</text>
+                        }
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    <form id="ClientAdd" role="form" method="post" action="javascript:;">
+                        @Html.HiddenFor(a => a.Mode)
+
+                        @if (Model.Mode == "Save" || Model.Mode == "Edit")
+                        {
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Client Id<span class="req">*</span></label>
+                                    @Html.TextBoxFor(a => a.clientId, new { @class = "form-control numericOnly", id = "clientId", maxlength = 8, placeholder = "Client Id", required = "required" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Client Name<span class="req">*</span></label>
+                                    @Html.TextBoxFor(a => a.clientName, new { @class = "form-control", id = "clientName", maxlength = 50, placeholder = "Client Name", required = "required" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">AMC Code<span class="req">*</span></label>
+                                    @Html.DropDownListFor(a => a.amcCode, Model.AMCCodeList, "Select a AMC Code", new { @class = "form-select", required = "required" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">PAN No</label>
+                                    @Html.TextBoxFor(a => a.panNo, new { @class = "form-control", id = "panNo", maxlength = 10, placeholder = "PAN No" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Mobile No</label>
+                                    @Html.TextBoxFor(a => a.mobileNo, new { @class = "form-control", id = "mobileNo", maxlength = 10, placeholder = "Mobile No" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Email</label>
+                                    @Html.TextBoxFor(a => a.invEmail, new { @class = "form-control", id = "invEmail", maxlength = 25, placeholder = "Investor Email" })
+                                </div>
+                            </div>
+                        }
+
+                        <div class="js-sweetalert">
+                            <div class="form-actions">
+                                @if (Model.Mode == "Save")
+                                {
+                                    <button title="Save" type="submit" id="btnSave" class="btn btn-primary">Save</button>
+                                }
+                                else if (Model.Mode == "Edit")
+                                {
+                                    <button title="Update" type="submit" id="btnSave" class="btn btn-primary">Update</button>
+                                }
+                                <button title="Back" id="btnCancel" class="btn btn-outline-secondary"
+                                        onclick="location.href = '/nse/Client/Index'">
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('#btnSave').click(function () {
+        $("#btnSave").prop('disabled', true);
+        $.ajax({
+            url: '@Url.Action("InsertUpdateClient", "Client")',
+            type: 'POST',
+            data: $("#ClientAdd").serialize(),
+            success: function (result) {
+                if (result.status == "save") {
+                    if (result.message == "success") {
+                        $("#btnSave").prop('disabled', false);
+                        $('#ClientAdd').each(function () { this.reset(); });
+                        Swal.fire("", "Record added successfully", "success");
+                    }
+                    else if (result.message == "exists") {
+                        Swal.fire("", "Client already exists.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else {
+                        Swal.fire("", "Record added failed.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                } else if (result.status == "update") {
+                    if (result.message == "success") {
+                        Swal.fire("", "Record updated successfully.", "success");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else if (result.message == "notexists") {
+                        Swal.fire("", "Client not exists.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                    else {
+                        Swal.fire("", "Record updated failed.", "error");
+                        $("#btnSave").prop('disabled', false);
+                    }
+                }
+                else {
+                    Swal.fire("", result.message, "error");
+                    $("#btnSave").prop('disabled', false);
+                }
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,189 @@
+﻿@model StackRadius.Entity.ClientModel
+
+<form id="PartialClientSelect">
+    <div id="clientGrid" style="width:100%; height:600px;"></div>
+</form>
+
+<script type="text/javascript">
+    var clientGridApi;
+
+    function clientColumns() {
+        return [
+            { field:"clientId",   headerName:"Client Id",   sortable:true,  filter:"agNumberColumnFilter" },
+            { field:"clientName", headerName:"Client Name", sortable:true,  filter:"agTextColumnFilter" },
+            { field:"panNo",      headerName:"PAN No",      sortable:true,  filter:"agTextColumnFilter" },
+            { field:"amcCode",    headerName:"Amc Code",    sortable:true,  filter:"agTextColumnFilter" },
+            { field:"mobileNo",   headerName:"Mobile No",   sortable:false, filter:"agTextColumnFilter" },
+            { field:"invEmail",   headerName:"Email",       sortable:false, filter:"agTextColumnFilter" },
+            {
+                headerName:"Action", sortable:false, filter:false,
+                cellRenderer: function (p) {
+                    if (!p.data) return "";
+                    var id = p.data.clientId;
+
+                    return "<a href='#' class='btnView' title='View' value='"+id+"'>View</a>&nbsp;&nbsp;" +
+                           "<a href='#' class='btnEdit' title='Edit' value='"+id+"'>Edit</a>&nbsp;&nbsp;" +
+                           "<a href='#' class='btnDelete' title='Delete' value='"+id+"'>Delete</a>";
+                }
+            }
+        ];
+    }
+
+    function buildDatasource() {
+        return {
+            getRows: function (params) {
+                var form = $("#ClientScreen").serialize();
+                var sort = params.sortModel && params.sortModel[0];
+                $.ajax({
+                    url: "../nse/Client/GetClientList?" + form,
+                    type: "POST",
+                    data: {
+                        start: params.startRow,
+                        length: params.endRow - params.startRow,
+                        sortCol: sort ? sort.colId : "clientId",
+                        sortDir: sort ? sort.sort : "desc",
+                        filterModel: JSON.stringify(params.filterModel || {})
+                    },
+                    success: function (res) {
+                        params.successCallback(res.data, res.recordsTotal);
+                    },
+                    error: function () { params.failCallback(); }
+                });
+            }
+        };
+    }
+
+    $(function () {
+        var el = document.getElementById("clientGrid");
+        clientGridApi = agGrid.createGrid(el, {
+            theme: agGrid.themeQuartz,
+            columnDefs: clientColumns(),
+            defaultColDef: { resizable: true, minWidth: 100 },
+            rowSelection: { mode: 'multiRow', checkboxes: true, headerCheckbox: true },
+            selectionColumnDef: { width: 44, pinned: 'left' },
+            rowData: [],
+
+            // ---- TEST DATA (client-side) ----
+            // rowData: [
+            //     { clientId: 1, clientName: "Test One",   panNo: "AAAAA1111A", amcCode: "AMC01", mobileNo: "9000000001", invEmail: "one@test.com" },
+            //     { clientId: 2, clientName: "Test Two",   panNo: "BBBBB2222B", amcCode: "AMC02", mobileNo: "9000000002", invEmail: "two@test.com" },
+            //     { clientId: 3, clientName: "Test Three", panNo: "CCCCC3333C", amcCode: "AMC03", mobileNo: "9000000003", invEmail: "three@test.com" }
+            // ],
+
+            rowModelType: "infinite",
+            cacheBlockSize: 10,
+            datasource: buildDatasource(),
+            pagination: true,
+            paginationPageSize: 10,
+            paginationPageSizeSelector: [10, 25, 50, 100],
+            overlayNoRowsTemplate: "No Record found."
+        });
+
+        InitActions();
+        wireCommandBar();
+    });
+
+    // Same reload entry point your search uses
+    function ReloadDatatable() {
+        clientGridApi.setGridOption("datasource", buildDatasource());
+    }
+
+    // Action buttons — event delegation
+    function InitActions() {
+        $("#btnAddNew").off("click").on("click", function () {
+            Process({ controller: "Client", action: "Add" });
+        });
+        $("#clientGrid").off("click", "a").on("click", "a", function () {
+            var id = $(this).attr("value");
+            if ($(this).hasClass("btnEdit"))
+                Process({ controller: "Client", action: "Edit", data: { Id: id, Mode: "Edit" } });
+            else if ($(this).hasClass("btnView"))
+                Process({ controller: "Client", action: "Edit", data: { Id: id, Mode: "View" } });
+            else if ($(this).hasClass("btnDelete"))
+                GridDelete({ value: id, api: clientGridApi, maintainvalue: this, url: "/Client/Delete" });
+        });
+    }
+
+    // Command bar (sr-commandbar) → wired to this grid
+    function wireCommandBar() {
+        var refreshBtn = document.querySelector('[data-sr-refresh]');
+        if (refreshBtn) refreshBtn.addEventListener('click', function () {
+            if (clientGridApi.getGridOption('rowModelType') === 'infinite')
+                clientGridApi.purgeInfiniteCache();
+            else clientGridApi.redrawRows();
+        });
+
+        var floatingOn = false;
+        var filterBtn = document.querySelector('[data-sr-filter-toggle]');
+        if (filterBtn) filterBtn.addEventListener('click', function () {
+            floatingOn = !floatingOn;
+            filterBtn.classList.toggle('active', floatingOn);
+            clientGridApi.setGridOption('defaultColDef', { resizable: true, minWidth: 100, floatingFilter: floatingOn });
+        });
+
+        var exportBtn = document.querySelector('[data-sr-export]');
+        if (exportBtn) exportBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            clientGridApi.exportDataAsCsv({ fileName: 'clients.csv' });
+        });
+
+        var quickBox = document.querySelector('[data-sr-quick]');
+        if (quickBox) quickBox.addEventListener('input', function () {
+            clientGridApi.setGridOption('quickFilterText', quickBox.value);
+        });
+
+        // Columns menu
+        var colsHost = document.querySelector('[data-sr-cols]');
+        if (colsHost) {
+            var state = clientGridApi.getColumnState();
+            colsHost.innerHTML = clientColumns().filter(function (c) { return c.field; }).map(function (c) {
+                var s = state.find(function (x) { return x.colId === c.field; });
+                return '<label class="dropdown-item d-flex gap-2"><input type="checkbox" class="form-check-input" data-col="' + c.field + '"' + (s && s.hide ? '' : ' checked') + '> ' + c.headerName + '</label>';
+            }).join('') + '<div class="dropdown-divider"></div><button type="button" class="dropdown-item" data-autosize>Autosize columns</button>';
+            colsHost.addEventListener('change', function (e) {
+                var f = e.target.getAttribute('data-col');
+                if (f) clientGridApi.setColumnsVisible([f], e.target.checked);
+            });
+            colsHost.addEventListener('click', function (e) {
+                if (e.target.closest('[data-autosize]')) clientGridApi.autoSizeAllColumns();
+            });
+        }
+
+        // Density menu
+        var DENSITY = { compact:{rowHeight:32,headerHeight:36}, default:{rowHeight:42,headerHeight:44}, comfortable:{rowHeight:52,headerHeight:56} };
+        document.querySelectorAll('[data-d]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var d = DENSITY[b.getAttribute('data-d')];
+                clientGridApi.setGridOption('rowHeight', d.rowHeight);
+                clientGridApi.setGridOption('headerHeight', d.headerHeight);
+                clientGridApi.resetRowHeights();
+            });
+        });
+
+        // Counts
+        function updateCounts() {
+            var totalEl = document.querySelector('[data-sr-total]');
+            if (totalEl) totalEl.textContent = clientGridApi.getDisplayedRowCount().toLocaleString();
+            var selEl = document.querySelector('[data-sr-selection]');
+            if (selEl) {
+                var n = clientGridApi.getSelectedRows().length;
+                selEl.hidden = n === 0;
+                selEl.textContent = n + ' selected';
+            }
+        }
+        clientGridApi.addEventListener('modelUpdated', updateCounts);
+        clientGridApi.addEventListener('selectionChanged', updateCounts);
+        updateCounts();   // ← fixes "… records" not showing
+    }
+    // Search box (in ClientSearch page)
+    $(document).on('click', '#btnSearch', function () {
+        clientGridApi.setGridOption('quickFilterText', $('#txtClientName').val());
+    });
+    $(document).on('click', '#btnReset', function () {
+        $('#txtClientName').val('');
+        clientGridApi.setGridOption('quickFilterText', '');
+    });
+    $(document).on('input', '#txtClientName', function () {
+        clientGridApi.setGridOption('quickFilterText', $(this).val());
+    });
+</script>

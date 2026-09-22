@@ -10,9 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StackRadius.Controllers
+namespace StackRadius.App.Areas.Admin.Controllers
 {
-    public class ClientController : Controller
+    [Area("Admin")]
+    public class MasterUserController : Controller
     {
         public ActionResult Index()
         {
@@ -20,13 +21,13 @@ namespace StackRadius.Controllers
             {
                 int RecordFrom = 1, RecordTo = 10;
                 string SortDir = "";
-                ClientModel clientObj = new ClientModel();
+                MasterUserModel clientObj = new MasterUserModel();
                 clientObj.Mode = "ALL";
                 clientObj.RecordFrom = RecordFrom;
                 clientObj.RecordTo = RecordTo;
                 clientObj.SortDir = SortDir;
-                clientObj.SortKey = "clientId";
-                return View("ClientSearch", clientObj);
+                clientObj.SortKey = "masterUserId";
+                return View("MasterUserSearch", clientObj);
             }
             catch
             {
@@ -36,10 +37,10 @@ namespace StackRadius.Controllers
 
         public ActionResult GridPartial()
         {
-            return View("ClientGrid");
+            return View("MasterUserGrid");
         }
 
-        public ActionResult GetClientList(ClientModel ClientModelObj)
+        public ActionResult GetMasterUserList(MasterUserModel MasterUserModelObj)
         {
             int RecordFrom = 0, RecordTo = 10;
             string SortKey = "", SortDir = "";
@@ -50,12 +51,12 @@ namespace StackRadius.Controllers
             var length = Request.Form["length"].ToString();
             List<Tuple<int, string>> ColumnHeader = new List<Tuple<int, string>>()
             {
-                new Tuple<int, string>(0,"clientId"),
-                new Tuple<int, string>(1,"clientName"),
-                new Tuple<int, string>(2,"amcCode"),
-                new Tuple<int, string>(3,"panNo"),
-                new Tuple<int, string>(4,"mobileNo"),
-                new Tuple<int, string>(5,"invEmail"),
+                new Tuple<int, string>(0,"MasterUserId"),
+                new Tuple<int, string>(1,"UserName"),
+                //new Tuple<int, string>(2,"amcCode"),
+                //new Tuple<int, string>(3,"panNo"),
+                //new Tuple<int, string>(4,"mobileNo"),
+                //new Tuple<int, string>(5,"invEmail"),
             };
             int column = Convert.ToInt16(Request.Form["order[0][column]"]);
             string dir = Request.Form["order[0][dir]"];
@@ -68,32 +69,32 @@ namespace StackRadius.Controllers
 
             //string search = Request.Query["search[value]"].ToString();
 
-            string txtClientName = Request.Query["clientName"].ToString();
+            string txtUserName = Request.Query["UserName"].ToString();
             string condition = "";
 
-            if (!string.IsNullOrEmpty(txtClientName))
+            if (!string.IsNullOrEmpty(txtUserName))
             {
-                condition = "clientname ILIKE '%" + txtClientName + "%'";
+                condition = "username ILIKE '%" + txtUserName + "%'";
             }
 
             RecordFrom = start != null ? Convert.ToInt32(start) + 1 : 0;
             RecordTo = length != null ? Convert.ToInt32(length) + RecordFrom - 1 : 0;
 
-            var clientobj = new ClientModel
+            var clientobj = new MasterUserModel
             {
                 Mode = "ALL",
                 RecordFrom = RecordFrom,
                 RecordTo = RecordTo,
-                SortKey = SortKey != "" ? SortKey : "clientId",
+                SortKey = SortKey != "" ? SortKey : "masterUserId",
                 SortDir = SortDir != "" ? SortDir : "DESC",
                 FilterCondition = condition
             };
 
-            ClientRepository repo = new ClientRepository();
+            MasterUserRepository repo = new MasterUserRepository();
             string jsonData = JsonConvert.SerializeObject(clientobj);
-            string retVal = repo.GetClients(jsonData);
-            List<ClientModel> lst = JsonConvert.DeserializeObject<List<ClientModel>>(retVal);
-            DataTable<ClientModel> obj = new DataTable<ClientModel>();
+            string retVal = repo.GetMasterUsers(jsonData);
+            List<MasterUserModel> lst = JsonConvert.DeserializeObject<List<MasterUserModel>>(retVal);
+            DataTable<MasterUserModel> obj = new DataTable<MasterUserModel>();
             if (lst.Count > 0)
             {
                 obj.draw = draw;
@@ -111,39 +112,36 @@ namespace StackRadius.Controllers
             return Json(obj);
         }
 
-        public ActionResult GetAllClients()
+        public ActionResult GetAllMasterUsers()
         {
-            ClientRepository repo = new ClientRepository();
-            var clientobj = new ClientModel
+            MasterUserRepository repo = new MasterUserRepository();
+            var clientobj = new MasterUserModel
             {
                 Mode = "ALL",
                 RecordFrom = 1,
                 RecordTo = 1000,
-                SortKey = "clientId",
+                SortKey = "masterUserId",
                 SortDir = "DESC"
             };
 
             string jsonData = JsonConvert.SerializeObject(clientobj);
-            string retVal = repo.GetClients(jsonData);
-            List<ClientModel> lst = JsonConvert.DeserializeObject<List<ClientModel>>(retVal);
-            return View("ClientGrid", lst);
+            string retVal = repo.GetMasterUsers(jsonData);
+            List<MasterUserModel> lst = JsonConvert.DeserializeObject<List<MasterUserModel>>(retVal);
+            return View("MasterUserGrid", lst);
         }
 
         public ActionResult Add()
         {
-            ClientModel obj = new ClientModel();
+            MasterUserModel obj = new MasterUserModel();
 
             // Data to be initialized goes here
             obj.Mode = "Save";
-            obj.clientId = 1;
-            obj.clientName = "";
-            obj.amcCode = "B";
-            obj.panNo = "";
-            obj.mobileNo = "";
-            obj.invEmail = "";
-            obj.AMCCodeList = Common.Common.GetAMCCodeList();
+            
+            //obj.mobileNo = "";
+            //obj.invEmail = "";
+            //obj.AMCCodeList = Common.Common.GetAMCCodeList();
 
-            return PartialView("ClientAdd", obj);
+            return PartialView("MasterUserAdd", obj);
         }
 
         /// <summary>
@@ -155,15 +153,15 @@ namespace StackRadius.Controllers
         {
             try
             {
-                ClientRepository repo = new ClientRepository();
-                string retVal = repo.GetClientsById(Id ?? 0);
-                List<ClientModel> lst = JsonConvert.DeserializeObject<List<ClientModel>>(retVal);
+                MasterUserRepository repo = new MasterUserRepository();
+                //string retVal = repo.GetMasterUsersById(Id ?? 0);
+                //List<MasterUserModel> lst = JsonConvert.DeserializeObject<List<MasterUserModel>>(retVal);
 
-                ClientModel obj = new ClientModel();
-                obj = lst.FirstOrDefault();
-                obj.Mode = "Edit";
-                obj.AMCCodeList = Common.Common.GetAMCCodeList();
-                return PartialView("ClientAdd", obj);
+                MasterUserModel obj = new MasterUserModel();
+                //obj = lst.FirstOrDefault();
+                //obj.Mode = "Edit";
+                //obj.AMCCodeList = Common.Common.GetAMCCodeList();
+                return PartialView("MasterUserAdd", obj);
             }
             catch (Exception)
             {
@@ -172,42 +170,33 @@ namespace StackRadius.Controllers
         }
 
         /// <summary>
-        /// InsertUpdateClient
+        /// InsertUpdateMasterUser
         /// This method is called from the View page using ajax call
         /// </summary>
         /// <param name="clientModelObj"></param>
         /// <returns>new BasicViewModel() object </returns>
-        public ActionResult InsertUpdateClient(ClientModel clientModelObj)
+        public ActionResult InsertUpdateMasterUser(MasterUserModel obj)
         {
-            ClientModel obj = new ClientModel();
-            obj.Mode = clientModelObj.Mode;
-            obj.clientId = clientModelObj.clientId;
-            obj.clientName = clientModelObj.clientName;
-            obj.amcCode = clientModelObj.amcCode;
-            obj.panNo = clientModelObj.panNo;
-            obj.mobileNo = clientModelObj.mobileNo;
-            obj.invEmail = clientModelObj.invEmail;
+            obj.Mode = obj.Mode;          
 
-            #region Check Client already exists
-            ClientRepository repo = new ClientRepository();
-            string retVal = repo.GetClientsById((int)clientModelObj.clientId);
-            List<ClientModel> lst = JsonConvert.DeserializeObject<List<ClientModel>>(retVal);
+            #region Check MasterUser already exists
+            MasterUserRepository repo = new MasterUserRepository();
+            string retVal = repo.GetMasterUserById((int)obj.MasterUserId);
+            List<MasterUserModel> lst = JsonConvert.DeserializeObject<List<MasterUserModel>>(retVal);
 
-            //Logger.LogDebug("Make Request: " + request.Method + " " + EndPoint + parameters);
-
-            bool IsClientFound = false;
+            bool IsMasterUserFound = false;
             if (lst.Count > 0)
             {
                 for (int i = 0; i < lst.Count(); i++)
                 {
-                    if (obj.clientId == lst[i].clientId)
+                    if (obj.MasterUserId == lst[i].MasterUserId)
                     {
-                        IsClientFound = true;
+                        IsMasterUserFound = true;
                         break;
                     }
                 }
             }
-            #endregion Check Client already exists
+            #endregion Check MasterUser already exists
 
             string data = "";
             string recordStatus = "";
@@ -216,22 +205,22 @@ namespace StackRadius.Controllers
             if (obj.Mode == "Save") // Insert 
             {
                 recordStatus = "save";
-                if (IsClientFound)
+                if (IsMasterUserFound)
                 {
                     data = "exists";
                 }
                 else
                 {
-                    data = repo.InsertOrUpdateClient(jsondata);
+                    data = repo.InsertUpdateMasterUsers(jsondata);
                     data = (data == "") ? "success" : "unsuccess";
                 }
             }
             else // Update 
             {
                 recordStatus = "update";
-                if (IsClientFound)
+                if (IsMasterUserFound)
                 {
-                    data = repo.InsertOrUpdateClient(jsondata);
+                    data = repo.InsertUpdateMasterUsers(jsondata);
                     data = (data == "") ? "success" : "unsuccess";
                 }
                 else
@@ -247,13 +236,13 @@ namespace StackRadius.Controllers
         {
             try
             {
-                ClientModel obj = new ClientModel();
-                obj.clientId = Value;
+                MasterUserModel obj = new MasterUserModel();
+                obj.MasterUserId = Value;
 
-                ClientRepository repo = new ClientRepository();
+                MasterUserRepository repo = new MasterUserRepository();
                 string jsondata = JsonConvert.SerializeObject(obj);
-                string retVal = repo.DeleteClient(jsondata);
-                string retMesssage = (retVal == "" ? "Client deleted successfully." : retVal);
+                string retVal = repo.DeleteMasterUsers(jsondata);
+                string retMesssage = (retVal == "" ? "User deleted successfully." : retVal);
                 return Json(new BasicViewModel() { message = retMesssage, status = (retVal == "" ? "Success" : "Failure") });
             }
             catch
@@ -261,8 +250,6 @@ namespace StackRadius.Controllers
                 throw;
             }
         }
-
-
     }
 }
 

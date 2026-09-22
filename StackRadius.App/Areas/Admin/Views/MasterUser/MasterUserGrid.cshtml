@@ -1,0 +1,187 @@
+﻿@model StackRadius.Entity.MasterUserModel
+
+
+<form id="PartialMasterUserSelect">
+    <div id="masterUserGrid" style="width:100%; height:600px;"></div>
+</form>
+
+<script type="text/javascript">
+    var masterUserGridApi;
+
+    function masterUserColumns() {
+        return [
+            { field:"masterUserId",   headerName:"User Id",   sortable:true,  filter:"agNumberColumnFilter" },
+            { field:"UserName", headerName:"User Name", sortable:true,  filter:"agTextColumnFilter" },
+            //{ field:"addressOne",   headerName:"addressOne",       sortable:false, filter:"agTextColumnFilter" },
+            {
+                headerName:"Action", sortable:false, filter:false,
+                cellRenderer: function (p) {
+                    if (!p.data) return "";
+                    var id = p.data.masterUserId;
+                    return "<a href='#' class='btnView' title='View' value='"+id+"'>View</a>&nbsp;&nbsp;" +
+                           "<a href='#' class='btnEdit' title='Edit' value='"+id+"'>Edit</a>&nbsp;&nbsp;" +
+                           "<a href='#' class='btnDelete' title='Delete' value='"+id+"'>Delete</a>";
+                }
+            }
+        ];
+    }
+
+    function buildDatasource() {
+        return {
+            getRows: function (params) {
+                var form = $("#MasterUserScreen").serialize();
+                var sort = params.sortModel && params.sortModel[0];
+                $.ajax({
+                    url: "../admin/MasterUser/GetMasterUserList" , //?" + form,
+                    type: "POST",
+                    data: {
+                        start: params.startRow,
+                        length: params.endRow - params.startRow,
+                        sortCol: sort ? sort.colId : "masterUserId",
+                        sortDir: sort ? sort.sort : "desc",
+                        filterModel: JSON.stringify(params.filterModel || {})
+                    },
+                    success: function (res) {
+                        params.successCallback(res.data, res.recordsTotal);
+                    },
+                    error: function () { params.failCallback(); }
+                });
+            }
+        };
+    }
+
+    $(function () {
+        var el = document.getElementById("masterUserGrid");
+        clientGridApi = agGrid.createGrid(el, {
+            theme: agGrid.themeQuartz,
+            columnDefs: masterUserColumns(),
+            defaultColDef: { resizable: true, minWidth: 100 },
+            rowSelection: { mode: 'multiRow', checkboxes: true, headerCheckbox: true },
+            selectionColumnDef: { width: 44, pinned: 'left' },
+
+            // // ---- TEST DATA (client-side) ----
+            // rowData: [
+            //     { masterUserId: 1, clientName: "Test One",   panNo: "AAAAA1111A", amcCode: "AMC01", mobileNo: "9000000001", invEmail: "one@test.com" },
+            //     { masterUserId: 2, clientName: "Test Two",   panNo: "BBBBB2222B", amcCode: "AMC02", mobileNo: "9000000002", invEmail: "two@test.com" },
+            //     { masterUserId: 3, clientName: "Test Three", panNo: "CCCCC3333C", amcCode: "AMC03", mobileNo: "9000000003", invEmail: "three@test.com" }
+            // ],
+
+            // ---- COMMENT OUT the server model for the test ----
+            rowModelType: "infinite",
+            cacheBlockSize: 10,
+            datasource: buildDatasource(),
+
+            pagination: true,
+            paginationPageSize: 10,
+            paginationPageSizeSelector: [10, 25, 50, 100],
+            overlayNoRowsTemplate: "No Record found."
+        });
+
+        InitActions();
+        wireCommandBar();
+    });
+
+    // Same reload entry point your search uses
+    function ReloadDatatable() {
+        masterUserGridApi.setGridOption("datasource", buildDatasource());
+    }
+
+    // Action buttons — event delegation
+    function InitActions() {
+        $("#btnAddNew").off("click").on("click", function () {
+            Process({ controller: "MasterUser", action: "Add" });
+        });
+        $("#masterUserGrid").off("click", "a").on("click", "a", function () {
+            var id = $(this).attr("value");
+            if ($(this).hasClass("btnEdit"))
+                Process({ controller: "MasterUser", action: "Edit", data: { Id: id, Mode: "Edit" } });
+            else if ($(this).hasClass("btnView"))
+                Process({ controller: "MasterUser", action: "Edit", data: { Id: id, Mode: "View" } });
+            else if ($(this).hasClass("btnDelete"))
+                GridDelete({ value: id, api: masterUserGridApi, maintainvalue: this, url: "/MasterUser/Delete" });
+        });
+    }
+
+    // Command bar (sr-commandbar) → wired to this grid
+    function wireCommandBar() {
+        var refreshBtn = document.querySelector('[data-sr-refresh]');
+        if (refreshBtn) refreshBtn.addEventListener('click', function () {
+            if (masterUserGridApi.getGridOption('rowModelType') === 'infinite')
+                masterUserGridApi.purgeInfiniteCache();
+            else masterUserGridApi.redrawRows();
+        });
+
+        var floatingOn = false;
+        var filterBtn = document.querySelector('[data-sr-filter-toggle]');
+        if (filterBtn) filterBtn.addEventListener('click', function () {
+            floatingOn = !floatingOn;
+            filterBtn.classList.toggle('active', floatingOn);
+            masterUserGridApi.setGridOption('defaultColDef', { resizable: true, minWidth: 100, floatingFilter: floatingOn });
+        });
+
+        var exportBtn = document.querySelector('[data-sr-export]');
+        if (exportBtn) exportBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            masterUserGridApi.exportDataAsCsv({ fileName: 'users.csv' });
+        });
+
+        var quickBox = document.querySelector('[data-sr-quick]');
+        if (quickBox) quickBox.addEventListener('input', function () {
+            masterUserGridApi.setGridOption('quickFilterText', quickBox.value);
+        });
+
+        // Columns menu
+        var colsHost = document.querySelector('[data-sr-cols]');
+        if (colsHost) {
+            var state = masterUserGridApi.getColumnState();
+            colsHost.innerHTML = masterUserColumns().filter(function (c) { return c.field; }).map(function (c) {
+                var s = state.find(function (x) { return x.colId === c.field; });
+                return '<label class="dropdown-item d-flex gap-2"><input type="checkbox" class="form-check-input" data-col="' + c.field + '"' + (s && s.hide ? '' : ' checked') + '> ' + c.headerName + '</label>';
+            }).join('') + '<div class="dropdown-divider"></div><button type="button" class="dropdown-item" data-autosize>Autosize columns</button>';
+            colsHost.addEventListener('change', function (e) {
+                var f = e.target.getAttribute('data-col');
+                if (f) masterUserGridApi.setColumnsVisible([f], e.target.checked);
+            });
+            colsHost.addEventListener('click', function (e) {
+                if (e.target.closest('[data-autosize]')) masterUserGridApi.autoSizeAllColumns();
+            });
+        }
+
+        // Density menu
+        var DENSITY = { compact:{rowHeight:32,headerHeight:36}, default:{rowHeight:42,headerHeight:44}, comfortable:{rowHeight:52,headerHeight:56} };
+        document.querySelectorAll('[data-d]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                var d = DENSITY[b.getAttribute('data-d')];
+                masterUserGridApi.setGridOption('rowHeight', d.rowHeight);
+                masterUserGridApi.setGridOption('headerHeight', d.headerHeight);
+                masterUserGridApi.resetRowHeights();
+            });
+        });
+
+        // Counts
+        function updateCounts() {
+            var totalEl = document.querySelector('[data-sr-total]');
+            if (totalEl) totalEl.textContent = masterUserGridApi.getDisplayedRowCount().toLocaleString();
+            var selEl = document.querySelector('[data-sr-selection]');
+            if (selEl) {
+                var n = masterUserGridApi.getSelectedRows().length;
+                selEl.hidden = n === 0;
+                selEl.textContent = n + ' selected';
+            }
+        }
+        masterUserGridApi.addEventListener('modelUpdated', updateCounts);
+        masterUserGridApi.addEventListener('selectionChanged', updateCounts);
+        updateCounts();   // ← fixes "… records" not showing
+    }
+    // Search box (in MasterUserSearch page)
+    $(document).on('click', '#btnSearch', function () {
+        masterUserGridApi.setGridOption('quickFilterText', $('#txtUserName').val());
+    });
+    $(document).on('click', '#btnReset', function () {
+        $('#txtUserName').val('');
+        masterUserGridApi.setGridOption('quickFilterText', '');
+    });
+    $(document).on('input', '#txtUserName', function () {
+        masterUserGridApi.setGridOption('quickFilterText', $(this).val());
+    });
+</script>

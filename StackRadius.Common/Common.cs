@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,6 +11,20 @@ namespace StackRadius.Common
 {
     public static class Common
     {
+        public static string Decrypt(string jsonData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(jsonData);
+            string DecryptedString = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            return DecryptedString;
+        }
+
+        public static string Encrypt(string decryptedString)
+        {
+            var base64EncodedBytes = System.Text.Encoding.UTF8.GetBytes(decryptedString);
+            string encryptedString = System.Convert.ToBase64String(base64EncodedBytes);
+            return encryptedString;
+        }
+
         public static void SaveToFile(string source, string filename)
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -34,23 +49,7 @@ namespace StackRadius.Common
             Logger.LogDebug("File saved to " + filePath + ".");
         }
 
-        public static string RemovePropertyFromJson(string jsonData, string propertyToRemove)
-        {
-            if (jsonData.Trim() == string.Empty)
-                return "";
-
-            // 1. Parse to mutable node
-            JsonNode node = JsonNode.Parse(jsonData);
-
-            // 2. Remove property
-            node.AsObject().Remove(propertyToRemove);
-
-            // 3. Convert back to string
-            string result = node.ToJsonString();
-
-            return result;
-        }
-
+ 
         public static List<SelectListItem> GetMasterFileTypeList()
         {
             List<SelectListItem> MasterFileTypeList = new List<SelectListItem>();
@@ -182,19 +181,7 @@ namespace StackRadius.Common
             UK
         }
 
-        //public static void ErrorLog(Exception exception, string url, string userName)
-        //{
-        //    ErrorLog.ErrorLogClient Req = new ErrorLog.ErrorLogClient();
-        //    ErrorLogViewModel ErrorLogViewModel = new ErrorLogViewModel();
-        //    ErrorLogViewModel.UserName = userName;
-        //    ErrorLogViewModel.DateTime = Common.ConvertUTCtoLocalTime();
-        //    ErrorLogViewModel.ErrorLocation = "Referer:" + url + "|Stack Trace:" + exception.ToString();
-        //    type = exception.GetType();
-        //    ErrorLogViewModel.ErrorType = type.Name;
-        //    ErrorLogViewModel.ErrorDescription = exception.Message.ToString();
-        //    string JsonData = JsonConvert.SerializeObject(ErrorLogViewModel);
-        //    Req.InsertUpdateErrorLog(JsonData);
-        //}
+
         public static T DeepCopy<T>(T source)
         {
             if (source == null) return default;
@@ -202,6 +189,5 @@ namespace StackRadius.Common
             string jsonString = System.Text.Json.JsonSerializer.Serialize(source);
             return System.Text.Json.JsonSerializer.Deserialize<T>(jsonString)!;
         }
-
     }
 }

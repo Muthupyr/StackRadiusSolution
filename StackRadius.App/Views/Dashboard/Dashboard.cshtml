@@ -1,16 +1,15 @@
 ﻿@model StackRadius.Entity.DashboardModel
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
 
-    ViewData["Title"] = "Dashboard";
+@{
+    ViewData["Title"] = "Master Data Home";
     ViewData["AreaKey"] = "dashboard";
-    ViewData["SubAreaKey"] = "dashboard";
+    ViewData["SubAreaKey"] = "md-home";
     ViewData["FooterRight"] = "Cross-exchange reference · scheme masters · vocabulary";
 }
 @*
     ══════════════════════════════════════════════════════════════════════════
     Pages/Master/Dashboard/MdHome.cshtml
-    URL: http://localhost:5220/dashboard/dashboard
+    URL: http://localhost:5220/master/dashboard/md-home
 
     Renders inside _Layout.cshtml (@RenderBody). The Layout has already
     drawn the SessionBand / GlobalNav / BreadCrumb / SideMap around this
@@ -29,7 +28,7 @@
 <div class="commandbar">
     <div class="commandbar-entity">
         <svg class="icon"><use href="#i-dashboard" /></svg>
-        Master Home
+        Master Data home
     </div>
     <button type="button" class="commandbar-btn">
         <svg class="icon"><use href="#i-refresh" /></svg>
@@ -61,25 +60,13 @@
             <svg class="icon icon-xl"><use href="#i-book" /></svg>
         </div>
         <div>
-            <h1>Home</h1>
+            <h1>Master Data home</h1>
             <p>Cross-exchange reference data. NSE + BSE + MFU scheme masters, ISIN registry, AMC catalogue, categories, benchmarks, calendars. Read-mostly; refreshed daily from source files.</p>
         </div>
     </div>
 
     <!-- 3. Stat tile grid -->
     <div class="stat-tile-grid">
-        
-         <div class="stat-tile">
-            <div class="tile-icon indigo">
-                <svg class="icon icon-lg"><use href="#i-book" /></svg>
-            </div>
-            <div class="tile-body">
-                <div class="tile-label">Schemes</div>
-                <div class="tile-value" style="color: green"><b>@Model.SchemesCount</b></div>
-                <div class="tile-sub">across 66 SEBI-registered AMCs</div>
-            </div>
-        </div>
-
         @foreach (var t in Model.Tiles)
         {
             <div class="stat-tile">

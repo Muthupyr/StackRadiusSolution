@@ -9,14 +9,14 @@ using DbParameter = StackRadius.DBHelper.DbParameter;
 
 namespace StackRadius.Repository
 {
-    public class NSESIPMasterRepository
+    public class SIPMasterRepository
     {
         public string GetAllSIPMaster()
         {
             DataTable dtTable = new DataTable();
             try
             {
-                string sqlStr = "nse_sip_master_get_fn";
+                string sqlStr = "nse_sip_master_getall_fn";
                 List<DbParameter> dbParam = new List<DbParameter>();
                 dbParam.Add(new DbParameter("mode", "ALL", DbType.String));
                 dbParam.Add(new DbParameter("p_scheme_code", "", DbType.String));

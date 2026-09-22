@@ -81,9 +81,9 @@ namespace StackRadius.Repository
                 Object retval = DbHelper.ExecuteScalar(sqlStr, CommandType.StoredProcedure, dbParam);               
                 return "";
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
-                //return Common.InsertUpdateErrorLog(ex, this.GetType().Name + "/DeleteClient");
+                Common.InsertUpdateErrorLog(ex, this.GetType().Name + "/DeleteClient");
                 return "";
 
             }

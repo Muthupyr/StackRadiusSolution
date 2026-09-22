@@ -206,14 +206,15 @@ namespace StackRadius.Controllers
             Logger.LogDebug($"Records : {report_data.Count}");
 
             try
-            {               
+            {
                 if (report_data.Count > 0)
                 {
                     string mode = "INSERT";
                     string jsonData = JsonConvert.SerializeObject(report_data[0]);
 
                     ClientProfileRepository repo = new ClientProfileRepository();
-                data=    repo.InsertOrUpdateClientProfile(mode, jsonData);}
+                    data = repo.InsertOrUpdateClientProfile(mode, jsonData);
+                }
                 data = (data == "") ? "success" : "unsuccess";
                 return data;
             }
