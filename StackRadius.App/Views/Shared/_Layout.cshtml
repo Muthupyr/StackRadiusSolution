@@ -30,6 +30,7 @@
 
 @inject StackRadius.Services.SitemapService Sitemap
 @{
+<<<<<<< HEAD
     var areaKey = (string)ViewData["AreaKey"] ?? "dashboard";
     var subAreaKey = (string)ViewData["SubAreaKey"];
     var (activeArea, activeSubArea) = Sitemap.FindByKeys(areaKey, subAreaKey);
@@ -43,9 +44,30 @@
      if (activeSubArea is not null) breadcrumb.Add(new(activeSubArea.Label, null));
 }
 
+=======
+       var areaKey = (string?)ViewData["AreaKey"] ?? "dashboard";
+    var subAreaKey = (string?)ViewData["SubAreaKey"];
+       var (activeArea, activeSubArea) = Sitemap.FindByKeys(areaKey, subAreaKey);
+ 
+    var breadcrumb = new List<StackRadius.Entity.BreadcrumbItem>
+    {
+        new("Master", "/master/dashboard/md-home"),
+        new(activeArea?.Label ?? areaKey, null),
+    };
+
+
+     if (activeSubArea is not null) breadcrumb.Add(new(activeSubArea.Label, null));
+}
+
+
+>>>>>>> 94bdb1643d7a96e5b02b205336821c76adad9e34
 <!DOCTYPE html>
 <html lang="en">
 <head>    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · Asthra Master</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] · Asthra Master</title>
@@ -69,7 +91,13 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap-grid.css" rel="stylesheet" />
 
+<<<<<<< HEAD
     @*   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>   *@
+=======
+    @*   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>  
+    <script src="bootstrap/js/bootstrap.min.js"></script>  
+ *@
+>>>>>>> 94bdb1643d7a96e5b02b205336821c76adad9e34
     <!-- datetimepicker  Js -->
     <script src="~/lib/jquery/jquery.datetimepicker.full.js"></script>
     <link href="~/css/jquery.datetimepicker.css" rel="stylesheet" />
@@ -92,6 +120,7 @@
     <link href="~/plugins/sweetalert/sweetalert2.css" rel="stylesheet" /> 
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<<<<<<< HEAD
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- <script src="~/js/site.js" asp-append-version="true"></script>-->
 
@@ -250,6 +279,66 @@
         </div>
         <footer class="app-footer">
             <div>Asthra Master </div>
+=======
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">StackRadius</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="NSEScheme" asp-action="Index">NSE Scheme</a>
+                        </li>
+                        @*  
+                           <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="MasterDownload" asp-action="Index">Master Download</a>
+                        </li>                                               
+                        < li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="Index">Client</a>
+                        </li>                        
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ClientProfile" asp-action="Index">Client Profile</a>
+                        </li> 
+                         *@  
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <partial name="_Icons" />
+
+    <div class="app-shell">
+        <partial name="_SessionBand" model="Sitemap.Session" />
+         <partial name="_GlobalNav" model="activeArea" />
+       <partial name="_BreadCrumb" model="breadcrumb" />
+        <div class="app-body">
+             <partial name="_SideMap" model="(Sitemap.MasterAppSitemap, areaKey, subAreaKey)" /> 
+            <div class="app-content">
+                @RenderBody()
+            </div>
+        </div>
+        <footer class="app-footer">
+            <div>Asthra Master · port 5220 · Razor Pages reference build</div>
+>>>>>>> 94bdb1643d7a96e5b02b205336821c76adad9e34
             <div>@ViewData["FooterRight"]</div>
         </footer>
     </div>

@@ -11,7 +11,11 @@
         - Click SubArea row    → navigate to /master/{area}/{subarea}
         - Active SubArea's Area is auto-expanded on page load.
 *@
+<<<<<<< HEAD
 @model ValueTuple<IReadOnlyList<StackRadius.Entity.AreaVm>, string, string>
+=======
+@model ValueTuple<IReadOnlyList<StackRadius.Entity.AreaVm>, string, string?>
+>>>>>>> 94bdb1643d7a96e5b02b205336821c76adad9e34
 @{
     var (areas, activeAreaKey, activeSubAreaKey) = Model;
 }
@@ -38,8 +42,12 @@
                         {
                             var isSubActive = sub.Key.Equals(activeSubAreaKey, StringComparison.OrdinalIgnoreCase);
                             <a class="side-map-subarea @(isSubActive ? "active" : "")"
+<<<<<<< HEAD
                                @* href="/master/@area.Key/@sub.Key" *@
                                href="/@area.Key/@sub.Key" 
+=======
+                               href="/master/@area.Key/@sub.Key"
+>>>>>>> 94bdb1643d7a96e5b02b205336821c76adad9e34
                                title="@sub.Hint">
                                 <svg class="icon"><use href="@("#" + sub.IconId)"/></svg>
                                 <span>@sub.Label</span>
