@@ -60,11 +60,21 @@ namespace StackRadius.App.Areas.NSE.Controllers
                     if (colFilter.ColumnName != "")
                     {
                         string strField = colFilter.ColumnName.Trim('"');
-                        string strOperator = " ILIKE '%"; // Default operator
-                        string strValue = colFilter.filterCondition.FilterValue;
 
-                        // "clientname ILIKE '%" + txtClientName + "%'";
-                        condition = string.Concat(strField, strOperator, strValue, "%'");
+                        if (colFilter.filterCondition.FilterType == "text")
+                        {
+                            // "clientname ILIKE '%" + txtClientName + "%'";
+                            string strOperator = " ILIKE '%"; // Default operator
+                            string strValue = colFilter.filterCondition.FilterValue;
+                            condition = string.Concat(strField, strOperator, strValue, "%'");
+                        }
+                        else if (colFilter.filterCondition.FilterType == "number")
+                        {
+                            // "clientId = 5";
+                            string strOperator = " = "; // Default operator
+                            string strValue = colFilter.filterCondition.FilterValue;
+                            condition = string.Concat(strField, strOperator, strValue);
+                        }
                     }
                 }
             }

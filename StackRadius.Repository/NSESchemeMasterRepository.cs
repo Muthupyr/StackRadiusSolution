@@ -20,6 +20,13 @@ namespace StackRadius.Repository
                 List<DbParameter> dbParam = new List<DbParameter>();
                 dbParam.Add(new DbParameter("mode", "ALL", DbType.String));
                 dbParam.Add(new DbParameter("p_unique_sr_no", 0, DbType.Int32));
+                //dbParam.Add(new DbParameter("p_record_from", (Int32?)obj["RecordFrom"], DbType.Int32));
+                //dbParam.Add(new DbParameter("p_record_to", (Int32?)obj["RecordTo"], DbType.Int32));
+                //dbParam.Add(new DbParameter("p_sort_key", (String)obj["SortKey"] == null ? "clientId" : (String)obj["SortKey"], DbType.String, 100));
+                //dbParam.Add(new DbParameter("p_sort_dir", (String)obj["SortDir"] == null ? "ASC" : (String)obj["SortDir"], DbType.String, 10));
+                //dbParam.Add(new DbParameter("p_search_string", string.IsNullOrEmpty(obj["FilterCondition"].ToString()) ? "" : obj["FilterCondition"].ToString(), DbType.String, 100));
+
+
                 dtTable = DbHelper.ExecuteDataTable(sqlStr, CommandType.StoredProcedure, dbParam);
                 return JsonConvert.SerializeObject(dtTable, Formatting.Indented);
             }
@@ -38,6 +45,12 @@ namespace StackRadius.Repository
                 List<DbParameter> dbParam = new List<DbParameter>();
                 dbParam.Add(new DbParameter("mode", "BYID", DbType.String));
                 dbParam.Add(new DbParameter("p_unique_sr_no", (Int32?)unique_sr_no, DbType.Int32));
+                //dbParam.Add(new DbParameter("p_clientId", (Int32?)clientId, DbType.Int32));
+                //dbParam.Add(new DbParameter("p_record_from", DBNull.Value));
+                //dbParam.Add(new DbParameter("p_record_to", DBNull.Value));
+                //dbParam.Add(new DbParameter("p_sort_key", ""));
+                //dbParam.Add(new DbParameter("p_sort_dir", ""));
+                //dbParam.Add(new DbParameter("p_search_string", ""));
                 dtTable = DbHelper.ExecuteDataTable(sqlStr, CommandType.StoredProcedure, dbParam);
                 return JsonConvert.SerializeObject(dtTable, Formatting.Indented);
             }

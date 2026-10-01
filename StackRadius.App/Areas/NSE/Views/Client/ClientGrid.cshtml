@@ -9,12 +9,12 @@
 
     function clientColumns() {
         return [
-            { field:"clientId",   headerName:"Client Id",   sortable:true,  filter:"agNumberColumnFilter" },
-            { field:"clientName", headerName:"Client Name", sortable:true,  filter:"agTextColumnFilter" },
-            { field:"panNo",      headerName:"PAN No",      sortable:true,  filter:"agTextColumnFilter" },
-            { field:"amcCode",    headerName:"Amc Code",    sortable:true,  filter:"agTextColumnFilter" },
-            { field:"mobileNo",   headerName:"Mobile No",   sortable:false, filter:"agTextColumnFilter" },
-            { field:"invEmail",   headerName:"Email",       sortable:false, filter:"agTextColumnFilter" },
+            { field:"clientId",   headerName:"Client Id",   sortable:true,  filter:"agNumberColumnFilter", filterParams: {filterOptions: ['equals']} },
+            { field:"clientName", headerName:"Client Name", sortable:true,  filter:"agTextColumnFilter", filterParams: {filterOptions: ['contains']} },
+            { field:"panNo",      headerName:"PAN No",      sortable:true,  filter:"agTextColumnFilter", filterParams: {filterOptions: ['contains']} },
+            { field:"amcCode",    headerName:"Amc Code",    sortable:true,  filter:"agTextColumnFilter", filterParams: {filterOptions: ['contains']} },
+            { field:"mobileNo",   headerName:"Mobile No",   sortable:false, filter:"agTextColumnFilter", filterParams: {filterOptions: ['contains']} },
+            { field:"invEmail",   headerName:"Email",       sortable:false, filter:"agTextColumnFilter", filterParams: {filterOptions: ['contains']} },
             {
                 headerName:"Action", sortable:false, filter:false,
                 cellRenderer: function (p) {
@@ -58,6 +58,7 @@
         clientGridApi = agGrid.createGrid(el, {
             theme: agGrid.themeQuartz,
             columnDefs: clientColumns(),
+           
             defaultColDef: { resizable: true, minWidth: 100 },
             rowSelection: { mode: 'multiRow', checkboxes: true, headerCheckbox: true },
             selectionColumnDef: { width: 44, pinned: 'left' },

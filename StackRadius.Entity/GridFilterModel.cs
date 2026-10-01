@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,7 +11,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace StackRadius.Entity
 {
-   public class GridSingleFilterModel
+    public class GridSingleFilterModel
     {
         // { "amcCode":{ "filterType":"text","type":"contains","filter":"B"} }
         public string ColumnName { get; set; } // "amcCode"
@@ -43,13 +44,29 @@ namespace StackRadius.Entity
             int pos2 = jsonData.IndexOf('}', pos1);
 
             string part1 = jsonData.Substring(0, pos1);
-            string part2 = jsonData.Substring(pos1 + 1, pos2 - pos1).Trim(); // including "}"
+            string part2 = jsonData.Substring(pos1 + 1, pos2 - pos1).Trim(); // dont remove "}"
             ColumnName = part1;
             filterCondition = new FilterCondition();
+
             if (!String.IsNullOrEmpty(part2))
             {
-                var model = System.Text.Json.JsonSerializer.Deserialize<FilterCondition>(part2);
-                this.filterCondition = model;
+                //{ "filterType":"text","type":"contains","filter":"B"}
+                if (part2.Contains("\"type\":\"contains\""))
+                {
+                    var model = System.Text.Json.JsonSerializer.Deserialize<FilterCondition>(part2);
+                    this.filterCondition = model;
+                }
+                // { "filterType":"number","type":"equals","filter":5}
+                else if (part2.Contains("\"type\":\"equals\""))
+                {
+                    string[] parts = part2.Split(",");  
+                    this.filterCondition.FilterType = "number";
+                    this.filterCondition.Type = "equals";
+                    //"filter":5
+                    this.filterCondition.FilterValue = parts[2].Split(':')[1].Trim().Trim('}');
+
+                }
+
             }
         }
     }
@@ -93,8 +110,17 @@ namespace StackRadius.Entity
             ColumnFilter = new ColumnFilter();
             if (!String.IsNullOrEmpty(part2))
             {
-                var model = System.Text.Json.JsonSerializer.Deserialize<ColumnFilter>(part2);
-                this.ColumnFilter = model;
+                //{ "filterType":"text","type":"contains","filter":"B"}
+                if (part2.Contains("\"type\":\"contains\""))
+                {
+                    var model = System.Text.Json.JsonSerializer.Deserialize<ColumnFilter>(part2);
+                    this.ColumnFilter = model;
+                }
+                else // { "filterType":"number","type":"equals","filter":5}
+                {
+                    //var model = System.Text.Json.JsonSerializer.Deserialize<ColumnFilter>(part2);
+                    //this.ColumnFilter = model;
+                }
             }
         }
     }
@@ -114,7 +140,7 @@ namespace StackRadius.Entity
     public class FilterCondition
     {
         [JsonPropertyName("filterType")]
-        string FilterType { get; set; }
+        public string FilterType { get; set; }
 
         [JsonPropertyName("type")]
         public string Type { get; set; }
@@ -126,8 +152,8 @@ namespace StackRadius.Entity
 
 
 
-
-// { "amcCode":{ "filterType":"text","type":"contains","filter":"B"} }
+// { "amcCode":{ "filterType":"text",  "type":"contains","filter":"B"} }
+//             { "filterType":"number","type":"equals",  "filter":5}"
 // { "panNo"  :{ "filterType":"text","operator":"OR","conditions":[{"filterType":"text","type":"contains","filter":"b"},{"filterType":"text","type":"contains","filter":"C"}]}}
 
 // {
